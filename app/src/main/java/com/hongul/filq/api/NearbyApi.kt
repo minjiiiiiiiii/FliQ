@@ -10,6 +10,7 @@ import com.google.android.gms.nearby.connection.Strategy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 object NearbyApi {
     fun CoroutineScope.startAdvertising(context: Context, name: String, callback: ConnectionLifecycleCallback) = async(Dispatchers.IO) {
@@ -28,6 +29,17 @@ object NearbyApi {
 
         Nearby.getConnectionsClient(context)
             .startDiscovery(SERVICE_ID, callback, option)
+    }
+
+    fun CoroutineScope.stopAdvertising(context: Context) = launch(Dispatchers.IO) {
+        Nearby.getConnectionsClient(context).run {
+            stopAdvertising()
+            stopAllEndpoints()
+        }
+    }
+
+    fun CoroutineScope.stopDiscovering(context: Context) = launch(Dispatchers.IO) {
+        Nearby.getConnectionsClient(context).stopDiscovery()
     }
 
     private const val SERVICE_ID = "com.hongul.fliq"

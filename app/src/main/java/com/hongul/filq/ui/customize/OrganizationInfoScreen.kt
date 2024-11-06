@@ -2,6 +2,7 @@ package com.hongul.filq.ui.customize
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,15 +34,28 @@ fun OrganizationInfoScreen() {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "명함 생성",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.Black,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = titlePadding, end = titlePadding)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween // Distribute space between items
+                    ) {
+                        Text(
+                            text = "명함 생성",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black,
+                            modifier = Modifier.padding(start = titlePadding) // Left padding
+                        )
+
+                        Text(
+                            text = "건너뛰기",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF125422), // Green color
+                            modifier = Modifier
+                                .clickable { /* 건너뛰기 클릭 로직 */ }
+                                .padding(end = 16.dp) // Optional padding to the right
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = { /* 뒤로 가기 클릭 로직 */ }) {

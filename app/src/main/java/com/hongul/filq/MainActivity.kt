@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
+import com.hongul.filq.ui.home.HomeScreen
 import com.hongul.filq.ui.theme.FilQTheme
 
 class MainActivity : ComponentActivity() {
@@ -12,8 +13,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FilQTheme {
+            FilQTheme(dynamicColor = false) {
                 val navController = rememberNavController()
+                HomeScreen() { }
             }
         }
     }

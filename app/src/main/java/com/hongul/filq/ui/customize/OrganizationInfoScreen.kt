@@ -21,13 +21,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.time.format.TextStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BasicInformation() {
+fun OrganizationInfoScreen() {
     val titlePadding = 121.dp
-    val progress = 0.25f
+    val progress = 0.5f
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -38,7 +37,6 @@ fun BasicInformation() {
                         text = "명함 생성",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
-                        //textAlign = TextAlign.Center,
                         color = Color.Black,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -82,66 +80,26 @@ fun BasicInformation() {
             }
 
             Text(
-                text = "기본 정보를\n입력해 주세요.",
+                text = "나의 소속을\n입력해 주세요.",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(vertical = 20.dp)
             )
 
-            // 이름 또는 닉네임 입력 필드
-            val name = remember { mutableStateOf("") }
+            val organizationName = remember { mutableStateOf("") }
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "이름 또는 닉네임 *",
+                    text = "기업 또는 단체명",
                     modifier = Modifier.padding(start = 5.dp, bottom = 4.dp),
                     fontWeight = FontWeight.Bold
                 )
 
-                // 이름 입력 필드
+                // 기업 또는 단체명 입력 필드
                 OutlinedTextField(
-                    value = name.value,
-                    onValueChange = { name.value = it },
-                    placeholder = { Text("2-20자 이내 / 특수문자 사용 가능") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .background(Color.Gray.copy(alpha = 0.1f)), // 배경 색상 설정
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Transparent, // 테두리 없애기
-                        unfocusedBorderColor = Color.Transparent // 테두리 없애기
-                    )
-                )
-
-                // "0/20" 문자
-                Text(
-                    text = "${name.value.length}/20",
-                    modifier = Modifier.padding(start = 320.dp, top = 0.dp),
-                    style = androidx.compose.ui.text.TextStyle(fontSize = 13.sp, color = Color.Gray)
-                )
-                Text(
-                    text = "*은 필수 사항입니다.",
-                    modifier = Modifier.padding(start = 240.dp, top = 0.dp),
-                    style = androidx.compose.ui.text.TextStyle(fontSize = 13.sp, color = Color.Gray)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 명함 제목 입력 필드
-            val title = remember { mutableStateOf("") }
-
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "명함 제목",
-                    modifier = Modifier.padding(start = 5.dp, bottom = 4.dp),
-                    fontWeight = FontWeight.Bold
-                )
-
-                OutlinedTextField(
-                    value = title.value,
-                    onValueChange = { title.value = it },
-                    placeholder = { Text("명함 제목을 입력하세요") },
+                    value = organizationName.value,
+                    onValueChange = { organizationName.value = it },
+                    placeholder = { Text("예) 계명대학교") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -155,20 +113,46 @@ fun BasicInformation() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 휴대폰 번호 입력 필드
-            val phone = remember { mutableStateOf("") }
+            val departmentPosition = remember { mutableStateOf("") }
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "휴대폰 번호",
+                    text = "부서 / 직책",
+                    modifier = Modifier.padding(start = 5.dp, bottom = 4.dp),
+                    fontWeight = FontWeight.Bold
+                )
+
+                // 부서 / 직책 입력 필드
+                OutlinedTextField(
+                    value = departmentPosition.value,
+                    onValueChange = { departmentPosition.value = it },
+                    placeholder = { Text("예 ) 컴퓨터공학과 / 5723483") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .background(Color.Gray.copy(alpha = 0.1f)), // 배경 색상 설정
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Transparent, // 테두리 없애기
+                        unfocusedBorderColor = Color.Transparent // 테두리 없애기
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val additionalPosition = remember { mutableStateOf("") }
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "추가 직책",
                     modifier = Modifier.padding(start = 5.dp, bottom = 4.dp),
                     fontWeight = FontWeight.Bold
                 )
 
                 OutlinedTextField(
-                    value = phone.value,
-                    onValueChange = { phone.value = it },
-                    placeholder = { Text("휴대폰 번호를 입력하세요") },
+                    value = additionalPosition.value,
+                    onValueChange = { additionalPosition.value = it },
+                    placeholder = { Text("예 ) 기획부장") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -183,63 +167,6 @@ fun BasicInformation() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-
-            // 이메일 입력 필드
-            val email = remember { mutableStateOf("") }
-
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "이메일",
-                    modifier = Modifier.padding(start = 5.dp, bottom = 4.dp),
-                    fontWeight = FontWeight.Bold
-                )
-
-                OutlinedTextField(
-                    value = email.value,
-                    onValueChange = { email.value = it },
-                    placeholder = { Text("이메일을 입력하세요") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .background(Color.Gray.copy(alpha = 0.1f)), // 배경 색상 설정
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Transparent, // 테두리 없애기
-                        unfocusedBorderColor = Color.Transparent // 테두리 없애기
-                    )
-                )
-            }
-
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 주소 입력 필드
-            val address = remember { mutableStateOf("") }
-
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "주소",
-                    modifier = Modifier.padding(start = 5.dp, bottom = 4.dp),
-                    fontWeight = FontWeight.Bold
-                )
-
-                OutlinedTextField(
-                    value = address.value,
-                    onValueChange = { address.value = it },
-                    placeholder = { Text("주소를 입력하세요") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .background(Color.Gray.copy(alpha = 0.1f)), // 배경 색상 설정
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Transparent, // 테두리 없애기
-                        unfocusedBorderColor = Color.Transparent // 테두리 없애기
-                    )
-                )
-            }
-
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             // 다음 버튼
             Box(

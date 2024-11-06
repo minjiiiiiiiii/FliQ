@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.hongul.filq.ui.customize.BasicInformation
 import com.hongul.filq.ui.customize.CustomizingScreen
 import com.hongul.filq.ui.customize.OrganizationInfoScreen
+import com.hongul.filq.ui.customize.SocialInfoScreen
 import com.hongul.filq.ui.theme.FilQTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +23,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FilQTheme{
-                OrganizationInfoScreen()
+                SocialInfoScreen()
             }
         }
     }

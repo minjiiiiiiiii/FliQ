@@ -6,11 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -34,14 +33,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.hongul.filq.ui.theme.PrimaryDark
 
 @Composable
-fun BoxScope.BottomNavigation(navController: NavHostController) {
+fun BottomNavigation(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     Row(
         modifier = Modifier
-            .align(Alignment.BottomCenter)
             .background(Color.White)
             .fillMaxWidth()
+            .height(72.dp)
             .drawWithContent {
                 drawContent()
                 drawLine(
@@ -50,8 +49,7 @@ fun BoxScope.BottomNavigation(navController: NavHostController) {
                     end = Offset(size.width, 0f),
                     strokeWidth = 1f,
                 )
-            }
-            .padding(vertical = 12.dp),
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {

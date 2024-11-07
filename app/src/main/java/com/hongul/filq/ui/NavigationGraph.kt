@@ -23,19 +23,26 @@ sealed class NavItem(val route: String, val title: String, @DrawableRes val icon
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = NavItem.Home.route) {
-        composable(NavItem.Home.route) {
-            HomeScreen()
+    Column(Modifier.fillMaxSize()) {
+        NavHost(
+            navController = navController,
+            startDestination = NavItem.Home.route,
+            modifier = Modifier.weight(1f)
+        ) {
+            composable(NavItem.Home.route) {
+                HomeScreen()
+            }
+            composable(NavItem.Contact.route) {
+                PlaceHolder(it.destination.route!!)
+            }
+            composable(NavItem.QR.route) {
+                PlaceHolder(it.destination.route!!)
+            }
+            composable(NavItem.More.route) {
+                PlaceHolder(it.destination.route!!)
+            }
         }
-        composable(NavItem.Contact.route) {
-            PlaceHolder(it.destination.route!!)
-        }
-        composable(NavItem.QR.route) {
-            PlaceHolder(it.destination.route!!)
-        }
-        composable(NavItem.More.route) {
-            PlaceHolder(it.destination.route!!)
-        }
+        BottomNavigation(navController = navController)
     }
 }
 

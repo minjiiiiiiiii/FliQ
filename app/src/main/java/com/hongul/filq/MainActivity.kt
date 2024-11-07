@@ -16,6 +16,12 @@ import com.hongul.filq.ui.customize.CustomizingScreen
 import com.hongul.filq.ui.customize.OrganizationInfoScreen
 import com.hongul.filq.ui.customize.PlusSns
 import com.hongul.filq.ui.customize.SocialInfoScreen
+import com.hongul.filq.ui.customize.FaceBookURL
+import com.hongul.filq.ui.customize.InstaGramURL
+import com.hongul.filq.ui.customize.LetterPosition
+import com.hongul.filq.ui.customize.PlusDesktopImage
+import com.hongul.filq.ui.customize.XURL
+import com.hongul.filq.ui.customize.YoutubeURL
 import com.hongul.filq.ui.theme.FilQTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FilQTheme{
-                PlusSns()
+                LetterPosition()
             }
         }
     }

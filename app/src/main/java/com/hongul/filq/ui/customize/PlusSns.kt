@@ -88,12 +88,12 @@ fun PlusSns() {
                     horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally) // Centers the content horizontally
                 ) {
                     // snsList와 imageResources 리스트 생성
-                    val snsList = listOf("Facebook", "YouTube", "Instagram", "Kakao")
+                    val snsList = listOf("Facebook", "Instagram", "X", "YouTube")
                     val imageResources = listOf(
-                        R.drawable.facebook,
-                        R.drawable.youtube,
-                        R.drawable.insta,
-                        R.drawable.kakao
+                        R.drawable.logo_facebook,
+                        R.drawable.logo_instagram,
+                        R.drawable.logo_x,
+                        R.drawable.logo_youtube,
                     )
 
                     // snsList를 순회하여 각 SNS와 이미지를 표시

@@ -21,12 +21,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.hongul.filq.ui.theme.PrimaryDark
@@ -49,7 +51,7 @@ fun BoxScope.BottomNavigation(navController: NavHostController) {
                     strokeWidth = 1f,
                 )
             }
-            .padding(vertical = 16.dp),
+            .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
@@ -102,10 +104,12 @@ fun BottomNavigationItem(
         Icon(
             ImageVector.vectorResource(id = icon),
             contentDescription = title,
+            modifier = Modifier.scale(3f / 4f),
             tint = baseColor
         )
         Text(
             title,
+            fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             color = baseColor
         )

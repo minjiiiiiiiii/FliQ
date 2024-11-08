@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.hongul.filq.R
 import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.BusinessCard
+import com.hongul.filq.model.SNS
 import com.hongul.filq.model.Sticker
 import com.hongul.filq.ui.theme.PrimaryDeepDark
 

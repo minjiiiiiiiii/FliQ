@@ -29,7 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hongul.filq.R
+import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.BusinessCard
+import com.hongul.filq.model.Sticker
 import com.hongul.filq.ui.theme.PrimaryDeepDark
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,8 +89,33 @@ fun HomeScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             PagerOffsets(pagerState.pageCount, pagerState.currentPage)
-            HorizontalPager(pagerState) {
-                EmptyBusinessCard()
+            HorizontalPager(pagerState) { page ->
+                when(page+1) {
+                    pagerState.pageCount -> EmptyBusinessCard(onClick = {
+                        cards.add(
+                            BusinessCard(
+                                id = "test_id",
+                                name = "윤주원",
+                                title = "나야, 윤주원.",
+                                phoneNumber = "010-3213-5392",
+                                email = "juwon1234@gmail.com",
+                                address = "대구광역시 달서구 신당동",
+                                organization = "계명대학교",
+                                department = "컴퓨터공학부",
+                                position = "홍얼홍얼(팀장)",
+                                sns = listOf(
+                                    SNS.Instagram("https://www.instagram.com/zooon.e")
+                                ),
+                                imagePath = "image.png",
+                                avatar = Avatar(
+                                    sticker = Sticker(2, 0xFFF1C40F)
+                                ),
+                                introduction = "안녕하세여."
+                            )
+                        )
+                    })
+                    else -> BusinessCardView(businessCard = cards[page])
+                }
             }
         }
     }

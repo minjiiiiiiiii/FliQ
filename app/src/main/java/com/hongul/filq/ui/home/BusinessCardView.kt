@@ -8,18 +8,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,14 +37,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.hongul.filq.R
 import com.hongul.filq.model.Avatar
@@ -47,14 +55,16 @@ import com.hongul.filq.model.BusinessCard
 import com.hongul.filq.ui.theme.PrimaryDeepDark
 
 @Composable
-fun EmptyBusinessCard() {
+fun EmptyBusinessCard(
+    onClick: () -> Unit
+) {
     BusinessCardLayout(
         businessCardView = {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(PrimaryDeepDark)
-                    .clickable { },
+                    .clickable(onClick = onClick),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -79,7 +89,7 @@ fun EmptyBusinessCard() {
 }
 
 @Composable
-fun BusinessCard(businessCard: BusinessCard) {
+fun BusinessCardView(businessCard: BusinessCard) {
     val context = LocalContext.current
 
     BusinessCardLayout(
@@ -92,10 +102,18 @@ fun BusinessCard(businessCard: BusinessCard) {
                             .decodeFile(imageFile.absolutePath)
                             .asImageBitmap(),
                         contentDescription = "명함 이미지",
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
                     )
                 }
-                else -> TODO("Placeholder 이미지 넣기")
+                else -> {
+                    Image(
+                        bitmap = ImageBitmap.imageResource(R.drawable.test_card),
+                        contentDescription = "명함 이미지",
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
+                    )
+                }
             }
         },
         profileView = {
@@ -105,12 +123,21 @@ fun BusinessCard(businessCard: BusinessCard) {
                     organization = it.organization,
                     department = it.department,
                     position = it.position,
+                    phoneNumber = it.phoneNumber,
+                    email = it.email,
+                    sns = it.sns,
                     avatar = it.avatar
                 )
             }
         },
         introductionView = {
-
+            Text(
+                businessCard.introduction,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .requiredHeight(180.dp)
+            )
         }
     )
 }
@@ -149,9 +176,7 @@ private fun BusinessCardLayout(
             )
             ElevatedCard(
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(9f / 5f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 profileView()
             }
@@ -165,9 +190,7 @@ private fun BusinessCardLayout(
 
             ElevatedCard(
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .defaultMinSize(minHeight = 240.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 introductionView()
             }
@@ -175,18 +198,22 @@ private fun BusinessCardLayout(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ProfileView(
     name: String,
     organization: String,
     department: String,
     position: String,
+    phoneNumber: String,
+    email: String,
+    sns: List<SNS>,
     avatar: Avatar
 ) {
     val context = LocalContext.current
     val avatarPadding = PaddingValues(
-        top = 40.dp,
-        end = 80.dp
+        top = 48.dp,
+        end = 60.dp
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -194,32 +221,92 @@ private fun ProfileView(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(72.dp)
+                    .height(84.dp)
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceAround
             ) {
                 Text(
                     organization,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = Color(0xFF696969)
                 )
                 Text(
                     "$department / $position",
+                    fontSize = 10.sp,
                     fontWeight = FontWeight.Light,
                     color = Color(0xFF969696)
                 )
                 Text(
                     name,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
             Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                
+                Row(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        Icons.Rounded.Call,
+                        contentDescription = "전화번호 추가",
+                        tint = Color(0xFF666666),
+                        modifier = Modifier.size(12.dp)
+                    )
+                    Text(
+                        phoneNumber,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.ExtraLight,
+                    )
+                }
+                Row(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        Icons.Rounded.Email,
+                        contentDescription = "이메일 추가",
+                        tint = Color(0xFF666666),
+                        modifier = Modifier.size(12.dp)
+                    )
+                    Text(
+                        email,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.ExtraLight
+                    )
+                }
+                FlowRow(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    for(item in sns) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(item.icon),
+                                contentDescription = "SNS",
+                                modifier = Modifier.size(12.dp)
+                            )
+                            Text(
+                                item.userId,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.ExtraLight
+                            )
+                        }
+                    }
+                }
             }
         }
         Box(
@@ -243,7 +330,7 @@ private fun ProfileAvatar(context: Context, avatar: Avatar) {
             Image(
                 bitmap = ImageBitmap.imageResource(R.drawable.avatar_default),
                 contentDescription = "프로필 이미지",
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier.size(72.dp),
                 contentScale = ContentScale.Fit
             )
         }
@@ -257,7 +344,7 @@ private fun ProfileAvatar(context: Context, avatar: Avatar) {
                         else -> ImageBitmap.imageResource(R.drawable.avatar_default)
                     },
                     contentDescription = "프로필 이미지",
-                    modifier = Modifier.size(64.dp),
+                    modifier = Modifier.size(72.dp),
                     contentScale = ContentScale.Fit
                 )
             }
@@ -267,7 +354,7 @@ private fun ProfileAvatar(context: Context, avatar: Avatar) {
                 Surface(
                     shape = CircleShape,
                     color = Color(it.color),
-                    modifier = Modifier.size(64.dp)
+                    modifier = Modifier.size(72.dp)
                 ) {
                     Image(
                         painter = BitmapPainter(
@@ -276,7 +363,9 @@ private fun ProfileAvatar(context: Context, avatar: Avatar) {
                             IntSize(it.size, it.size)
                         ),
                         contentDescription = "스티커",
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxSize(),
                         contentScale = ContentScale.Fit
                     )
                 }

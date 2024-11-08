@@ -49,12 +49,12 @@ fun LetterPosition() {
                         }
                     }
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                 Spacer(modifier = Modifier.height(5.dp))
             }
         }
 
         Button(
-            onClick = { textColor = if (textColor == Color.Black) Color.Green else Color.Black },
+            onClick = { textColor = Color.Black },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
@@ -118,16 +118,17 @@ fun BusinessCard(textColor: Color,
         // 체크박스를 추가하여 선택할 수 있도록 함
         Row(
             modifier = Modifier
-                .padding(top = 5.dp)
+                .padding(top = 0.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
                 checked = isChecked, // 체크 상태를 받음
                 onCheckedChange = onCheckedChange // 체크 상태 변경 함수
             )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(text = "선택하기", color = textColor, fontSize = 14.sp)
+            Spacer(modifier = Modifier.width(0.dp))
+            Text(text = "선택", color = textColor, fontSize = 17.sp)
         }
     }
 }

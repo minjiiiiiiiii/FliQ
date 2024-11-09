@@ -137,7 +137,7 @@ fun CategoryScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth()
                 .padding(vertical = 5.dp, horizontal = 16.dp),
             shape = RoundedCornerShape(12.dp), // 모서리 각지게 하기 (12dp)
-            colors = ButtonDefaults.buttonColors(Color.Gray)
+            colors = ButtonDefaults.buttonColors(Color(0xFFBDBDBD)) // 밝은 갈색 버튼
         ) {
             Row(horizontalArrangement = Arrangement.Start,  // 왼쪽 정렬
             modifier = Modifier.fillMaxWidth() // 버튼 너비 채우기

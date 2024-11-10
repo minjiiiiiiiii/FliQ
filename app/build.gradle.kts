@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.play.services.nearby)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization)
+    implementation(libs.compose.colorpicker)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

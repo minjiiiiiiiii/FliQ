@@ -47,7 +47,7 @@ fun NavigationGraph(navController: NavHostController) {
             }
             composable<StickerChangeRoute> {
                 val route = it.toRoute<StickerChangeRoute>()
-                StickerChangeScreen(route.cardId)
+                StickerChangeScreen(route.cardId, navController)
             }
         }
         BottomNavigation(navController = navController)

@@ -90,7 +90,10 @@ fun EmptyBusinessCard(
 }
 
 @Composable
-fun BusinessCardView(businessCard: BusinessCard) {
+fun BusinessCardView(
+    businessCard: BusinessCard,
+    onClickProfileImage: () -> Unit
+) {
     val context = LocalContext.current
 
     BusinessCardLayout(
@@ -127,7 +130,8 @@ fun BusinessCardView(businessCard: BusinessCard) {
                     phoneNumber = it.phoneNumber,
                     email = it.email,
                     sns = it.sns,
-                    avatar = it.avatar
+                    avatar = it.avatar,
+                    onChangeProfileImage = onClickProfileImage
                 )
             }
         },
@@ -209,7 +213,8 @@ private fun ProfileView(
     phoneNumber: String,
     email: String,
     sns: List<SNS>,
-    avatar: Avatar
+    avatar: Avatar,
+    onChangeProfileImage: () -> Unit
 ) {
     val context = LocalContext.current
     val avatarPadding = PaddingValues(
@@ -318,57 +323,72 @@ private fun ProfileView(
         ) {
             ProfileAvatar(
                 context = context,
-                avatar = avatar
+                avatar = avatar,
+                onChangeProfileImage = onChangeProfileImage
             )
         }
     }
 }
 
 @Composable
-private fun ProfileAvatar(context: Context, avatar: Avatar) {
-    when {
-        avatar.isDefault -> {
-            Image(
-                bitmap = ImageBitmap.imageResource(R.drawable.avatar_default),
-                contentDescription = "프로필 이미지",
-                modifier = Modifier.size(72.dp),
-                contentScale = ContentScale.Fit
+private fun ProfileAvatar(context: Context, avatar: Avatar, onChangeProfileImage: () -> Unit) {
+    Surface(
+        shape = CircleShape,
+        modifier = Modifier
+            .size(72.dp)
+            .clickable(
+                interactionSource = null,
+                indication = null,
+                onClick = onChangeProfileImage
             )
-        }
-        avatar.isImage -> {
-            context.filesDir.resolve(avatar.path!!).let {
+    ) {
+        when {
+            avatar.isDefault -> {
                 Image(
-                    bitmap = when(it.exists()) {
-                        true -> BitmapFactory
-                            .decodeFile(it.absolutePath)
-                            .asImageBitmap()
-                        else -> ImageBitmap.imageResource(R.drawable.avatar_default)
-                    },
+                    bitmap = ImageBitmap.imageResource(R.drawable.avatar_default),
                     contentDescription = "프로필 이미지",
-                    modifier = Modifier.size(72.dp),
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
             }
-        }
-        avatar.isSticker -> {
-            avatar.sticker!!.let {
-                Surface(
-                    shape = CircleShape,
-                    color = Color(it.color),
-                    modifier = Modifier.size(72.dp)
-                ) {
+
+            avatar.isImage -> {
+                context.filesDir.resolve(avatar.path!!).let {
                     Image(
-                        painter = BitmapPainter(
-                            ImageBitmap.imageResource(R.drawable.stickers),
-                            IntOffset(it.x, it.y),
-                            IntSize(it.size, it.size)
-                        ),
-                        contentDescription = "스티커",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxSize(),
+                        bitmap = when (it.exists()) {
+                            true -> BitmapFactory
+                                .decodeFile(it.absolutePath)
+                                .asImageBitmap()
+
+                            else -> ImageBitmap.imageResource(R.drawable.avatar_default)
+                        },
+                        contentDescription = "프로필 이미지",
+                        modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Fit
                     )
+                }
+            }
+
+            avatar.isSticker -> {
+                avatar.sticker!!.let {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(it.color)
+                    ) {
+                        Image(
+                            painter = BitmapPainter(
+                                ImageBitmap.imageResource(R.drawable.stickers),
+                                IntOffset(it.x, it.y),
+                                IntSize(it.size, it.size)
+                            ),
+                            contentDescription = "스티커",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxSize(),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
                 }
             }
         }

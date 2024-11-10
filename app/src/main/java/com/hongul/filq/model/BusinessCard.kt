@@ -1,6 +1,7 @@
 package com.hongul.filq.model
 
 import androidx.annotation.DrawableRes
+import androidx.compose.ui.graphics.Color
 import com.hongul.filq.R
 
 data class BusinessCard(
@@ -55,7 +56,7 @@ data class Avatar(
 
 data class Sticker(
     val pos: Int,
-    val color: Long
+    val color: Color
 ) {
     companion object {
         const val SIZE = 256

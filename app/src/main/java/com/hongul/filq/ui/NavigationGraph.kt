@@ -11,8 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.hongul.filq.R
 import com.hongul.filq.ui.home.HomeScreen
+import com.hongul.filq.ui.home.StickerChangeRoute
+import com.hongul.filq.ui.home.StickerChangeScreen
 
 sealed class NavItem(val route: String, val title: String, @DrawableRes val icon: Int) {
     data object Home : NavItem("home", "내 명함", R.drawable.ic_nav_home)
@@ -24,13 +27,14 @@ sealed class NavItem(val route: String, val title: String, @DrawableRes val icon
 @Composable
 fun NavigationGraph(navController: NavHostController) {
     Column(Modifier.fillMaxSize()) {
+        // TODO: serializable 클래스로 루트 교체
         NavHost(
             navController = navController,
             startDestination = NavItem.Home.route,
             modifier = Modifier.weight(1f)
         ) {
             composable(NavItem.Home.route) {
-                HomeScreen()
+                HomeScreen(navigator = navController)
             }
             composable(NavItem.Contact.route) {
                 PlaceHolder(it.destination.route!!)
@@ -40,6 +44,10 @@ fun NavigationGraph(navController: NavHostController) {
             }
             composable(NavItem.More.route) {
                 PlaceHolder(it.destination.route!!)
+            }
+            composable<StickerChangeRoute> {
+                val route = it.toRoute<StickerChangeRoute>()
+                StickerChangeScreen(route.cardId)
             }
         }
         BottomNavigation(navController = navController)

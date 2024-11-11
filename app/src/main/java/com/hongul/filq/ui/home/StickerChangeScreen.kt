@@ -1,11 +1,13 @@
 package com.hongul.filq.ui.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,11 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +28,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,13 +40,11 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.github.skydoves.colorpicker.compose.AlphaSlider
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
@@ -100,37 +101,126 @@ fun StickerChangeScreen(cardId: String, navigator: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(scrollState),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                when (screenType) {
-                    ScreenType.StickerType -> {
-                        StickerTypeChangeScreen(
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        StickerPreview(
                             stickerRes,
-                            sticker,
-                            onChange = { sticker = it },
-                            onNext = { screenType = ScreenType.StickerColor }
+                            x = sticker.x,
+                            y = sticker.y,
+                            size = sticker.size,
+                            stickerColor = sticker.color
                         )
                     }
 
-                    ScreenType.StickerColor -> {
-                        StickerColorChangeScreen(
-                            stickerRes,
-                            sticker,
-                            onChange = { sticker = it },
-                            onComplete = {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                        when(screenType) {
+                            ScreenType.StickerType -> StickerTypeChange(stickerRes) { sticker = it }
+                            ScreenType.StickerColor -> StickerColorChange(sticker) { sticker = it }
+                        }
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        when(screenType) {
+                            ScreenType.StickerType -> {
+                                screenType = ScreenType.StickerColor
+                            }
+                            ScreenType.StickerColor -> {
                                 navigator.navigate("home") {
                                     popUpTo(navigator.graph.startDestinationId) {
                                         inclusive = true
                                     }
                                 }
                             }
-                        )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PrimaryDark
+                    )
+                ) {
+                    Text(
+                        when(screenType) {
+                            ScreenType.StickerType -> "다음"
+                            ScreenType.StickerColor -> "완료"
+                        },
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            }
+        }
+    }
+
+    BackHandler {
+        when(screenType) {
+            ScreenType.StickerType -> {
+                navigator.popBackStack()
+            }
+            ScreenType.StickerColor -> {
+                screenType = ScreenType.StickerType
+            }
+        }
+    }
+}
+
+@Composable
+private fun StickerTypeChange(
+    stickerRes: ImageBitmap,
+    onChange: (Sticker) -> Unit
+) {
+    val stickers: List<Sticker> = (0 until 16).map { Sticker(it, Color.LightGray) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text("스티커 종류", modifier = Modifier.padding(start = 16.dp))
+
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    for (i in 0 until 4) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            for (j in 0 until 4) {
+                                val current = stickers[i * 4 + j]
+
+                                Box(modifier = Modifier.clickable { onChange(current.copy()) }) {
+                                    StickerPreview(
+                                        stickerRes,
+                                        x = current.x,
+                                        y = current.y,
+                                        size = current.size,
+                                        stickerColor = current.color
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -139,119 +229,46 @@ fun StickerChangeScreen(cardId: String, navigator: NavHostController) {
 }
 
 @Composable
-fun StickerTypeChangeScreen(
-    stickerRes: ImageBitmap,
+private fun StickerColorChange(
     sticker: Sticker,
-    onChange: (Sticker) -> Unit,
-    onNext: () -> Unit
-) {
-    val stickers = (0 until 16).map {
-        Sticker(it, Color.LightGray)
-    }
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            StickerPreview(
-                stickerRes,
-                x = sticker.x,
-                y = sticker.y,
-                size = sticker.size,
-                stickerColor = sticker.color
-            )
-        }
-
-        ItemGridPicker(stickers, 4, 4, 16.dp) {
-            Surface(
-                shape = CircleShape,
-                modifier = Modifier.clickable { onChange(it) }
-            ) {
-                StickerPreview(
-                    stickerRes,
-                    x = it.x,
-                    y = it.y,
-                    size = it.size,
-                    stickerColor = it.color
-                )
-            }
-        }
-    }
-
-    Button(
-        onClick = onNext,
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = PrimaryDark
-        )
-    ) {
-        Text(
-            "다음",
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-    }
-}
-
-@Composable
-fun StickerColorChangeScreen(
-    stickerRes: ImageBitmap,
-    sticker: Sticker,
-    onChange: (Sticker) -> Unit,
-    onComplete: () -> Unit
+    onChange: (Sticker) -> Unit
 ) {
     val colorPickerController = rememberColorPickerController()
 
+    LaunchedEffect(Unit) {
+        colorPickerController.selectByColor(Color.LightGray, false)
+    }
+
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Box(
+        Text("색상", modifier = Modifier.padding(start = 16.dp))
+
+        ElevatedCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp),
-            contentAlignment = Alignment.Center
         ) {
-            StickerPreview(
-                stickerRes,
-                x = sticker.x,
-                y = sticker.y,
-                size = sticker.size,
-                stickerColor = sticker.color
+            HsvColorPicker(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(16.dp),
+                controller = colorPickerController,
+                onColorChanged = { onChange(sticker.copy(color = it.color)) },
+                initialColor = Color.LightGray
             )
         }
 
-        HsvColorPicker(
-            modifier = Modifier.size(200.dp),
-            controller = colorPickerController,
-            onColorChanged = { onChange(sticker.copy(color = it.color)) }
-        )
+        Text("밝기", modifier = Modifier.padding(start = 16.dp))
 
         BrightnessSlider(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(16.dp),
+                .height(24.dp),
             controller = colorPickerController,
-        )
-    }
-
-    Button(
-        onClick = onComplete,
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = PrimaryDark
-        )
-    ) {
-        Text(
-            "마침",
-            modifier = Modifier.padding(vertical = 8.dp)
         )
     }
 }
@@ -267,7 +284,8 @@ private fun StickerPreview(
     Surface(
         shape = CircleShape,
         color = stickerColor,
-        modifier = Modifier.size(72.dp)
+        modifier = Modifier.size(72.dp),
+        shadowElevation = 4.dp
     ) {
         Image(
             BitmapPainter(
@@ -281,30 +299,5 @@ private fun StickerPreview(
                 .fillMaxSize(),
             contentScale = ContentScale.Fit
         )
-    }
-}
-
-@Composable
-private fun <T> ItemGridPicker(
-    items: List<T>,
-    row: Int,
-    column: Int,
-    gap: Dp,
-    content: @Composable (item: T) -> Unit
-) {
-    Box(contentAlignment = Alignment.Center) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(gap)
-        ) {
-            for (i in 0 until row) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(gap)
-                ) {
-                    for (j in 0 until column) {
-                        content(items[i * column + j])
-                    }
-                }
-            }
-        }
     }
 }

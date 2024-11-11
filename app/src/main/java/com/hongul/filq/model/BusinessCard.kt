@@ -70,10 +70,10 @@ data class Sticker(
 }
 
 // Model -> Entity 변환
-fun BusinessCard.toEntity() {
+fun BusinessCard.toEntity(): BusinessCardEntity {
     val (id, owner) = id.split("@")
 
-    BusinessCardEntity(
+    return BusinessCardEntity(
         id = id.toInt(),
         owner = owner,
         name = name,

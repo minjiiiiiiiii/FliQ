@@ -1,5 +1,6 @@
 package com.hongul.filq.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,8 +25,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,7 +46,6 @@ import com.hongul.filq.R
 import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.BusinessCard
 import com.hongul.filq.model.SNS
-import com.hongul.filq.model.Sticker
 import com.hongul.filq.ui.HomeViewModelProvider
 import com.hongul.filq.ui.theme.PrimaryDeepDark
 
@@ -55,10 +55,9 @@ fun HomeScreen(
     navigator: NavController,
     viewModel: HomeViewModel = viewModel(factory = HomeViewModelProvider.Factory)
 ) {
-    val title = stringResource(R.string.app_name)
-
-    val cards = remember { mutableStateListOf<BusinessCard>() }
+    val cards by viewModel.businessCards.collectAsState()
     val pagerState = rememberPagerState(initialPage = 0) { cards.size+1 }
+
     var isBottomSheetOpen by remember { mutableStateOf(false) }
 
     if(isBottomSheetOpen) {
@@ -81,7 +80,7 @@ fun HomeScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = title,
+                        text = stringResource(R.string.app_name),
                         fontSize = 20.sp,
                         modifier = Modifier.padding(horizontal = 10.dp)
                     )
@@ -121,28 +120,31 @@ fun HomeScreen(
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // TODO: Pager content 영역 밖에서 swipe 안되는 문제 해결하기
             PagerOffsets(pagerState.pageCount, pagerState.currentPage)
-            HorizontalPager(pagerState) { page ->
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.Top
+            ) { page ->
                 when(page+1) {
                     pagerState.pageCount -> EmptyBusinessCard(onClick = {
-                        cards.add(
+                        viewModel.insertCard(
                             BusinessCard(
-                                id = "test_id",
-                                name = "윤주원",
-                                title = "나야, 윤주원.",
+                                name = "홍길동",
+                                title = "나야, 홍길동",
                                 phoneNumber = "010-3213-5392",
-                                email = "juwon1234@gmail.com",
+                                email = "gildong@gmail.com",
                                 address = "대구광역시 달서구 신당동",
                                 organization = "계명대학교",
                                 department = "컴퓨터공학부",
-                                position = "홍얼홍얼(팀장)",
+                                position = "홍얼홍얼",
                                 sns = listOf(
-                                    SNS.Instagram("https://www.instagram.com/zooon.e")
+                                    SNS.Instagram("https://www.instagram.com/gildong")
                                 ),
                                 imagePath = "image.png",
-                                avatar = Avatar(
-                                    sticker = Sticker(2, Color(0xFFF1C40F))
-                                ),
+                                avatar = Avatar(),
                                 introduction = "안녕하세여."
                             )
                         )

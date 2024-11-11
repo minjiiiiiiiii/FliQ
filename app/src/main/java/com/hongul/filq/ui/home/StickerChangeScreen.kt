@@ -48,18 +48,21 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.hongul.filq.R
+import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.Sticker
+import com.hongul.filq.ui.HomeViewModelProvider
 import com.hongul.filq.ui.theme.PrimaryDark
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class StickerChangeRoute(
-    val cardId: String
+    val cardId: Int
 )
 
 private enum class ScreenType {
@@ -68,7 +71,11 @@ private enum class ScreenType {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StickerChangeScreen(cardId: String, navigator: NavHostController) {
+fun StickerChangeScreen(
+    cardId: Int,
+    navigator: NavHostController,
+    viewModel: HomeViewModel = viewModel(factory = HomeViewModelProvider.Factory)
+) {
     val stickerRes = ImageBitmap.imageResource(R.drawable.stickers)
 
     val scrollState = rememberScrollState()
@@ -137,6 +144,8 @@ fun StickerChangeScreen(cardId: String, navigator: NavHostController) {
                                 screenType = ScreenType.StickerColor
                             }
                             ScreenType.StickerColor -> {
+                                viewModel.updateAvatar(cardId, Avatar(sticker = sticker))
+
                                 navigator.navigate("home") {
                                     popUpTo(navigator.graph.startDestinationId) {
                                         inclusive = true

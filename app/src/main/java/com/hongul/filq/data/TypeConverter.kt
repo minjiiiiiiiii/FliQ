@@ -8,7 +8,7 @@ import com.hongul.filq.model.SNS
 import com.hongul.filq.model.Sticker
 
 @ProvidedTypeConverter
-object SNSConverter {
+class SNSConverter {
     @TypeConverter
     fun fromSNSList(sns: List<SNS>): String {
         return sns.joinToString(",") {
@@ -38,11 +38,11 @@ object SNSConverter {
 }
 
 @ProvidedTypeConverter
-object AvatarConverter {
+class AvatarConverter {
     @TypeConverter
     fun fromAvatar(avatar: Avatar): String {
         val sticker = avatar.sticker?.let { "${it.pos}:${it.color.value}" } ?: ""
-        return "${avatar.path};${sticker}"
+        return "${avatar.path ?: ""};${sticker}"
     }
 
     @TypeConverter

@@ -29,8 +29,9 @@ abstract class FliQDatabase : RoomDatabase() {
                     FliQDatabase::class.java,
                     "fliq_database"
                 )
-                    .addTypeConverter(SNSConverter)
-                    .addTypeConverter(AvatarConverter)
+                    .addTypeConverter(SNSConverter())
+                    .addTypeConverter(AvatarConverter())
+                    .fallbackToDestructiveMigration()
                     .build().also { INSTANCE = it }
             }
         }

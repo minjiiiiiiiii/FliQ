@@ -3,10 +3,10 @@ package com.hongul.filq.model
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.hongul.filq.R
+import com.hongul.filq.data.BusinessCardEntity
 
 data class BusinessCard(
-    // 명함 고유 id(userId@prefix(autoIncremented) 형식)
-    // ex) 94842789402141@24
+    // primary key(owner@id)
     val id: String,
 
     val name: String, // 본명
@@ -68,3 +68,44 @@ data class Sticker(
     val x: Int get() = (pos % 4) * size
     val y: Int get() = (pos / 4) * size
 }
+
+// Model -> Entity 변환
+fun BusinessCard.toEntity() {
+    val (id, owner) = id.split("@")
+
+    BusinessCardEntity(
+        id = id.toInt(),
+        owner = owner,
+        name = name,
+        title = title,
+        phoneNumber = phoneNumber,
+        email = email,
+        address = address,
+        organization = organization,
+        department = department,
+        position = position,
+        sns = sns,
+        imagePath = imagePath,
+        avatar = avatar,
+        introduction = introduction,
+        memo = memo
+    )
+}
+
+// Entity -> Model 변환
+fun BusinessCardEntity.toModel() = BusinessCard(
+    id = "$owner@$id",
+    name = name,
+    title = title,
+    phoneNumber = phoneNumber,
+    email = email,
+    address = address,
+    organization = organization,
+    department = department,
+    position = position,
+    sns = sns,
+    imagePath = imagePath,
+    avatar = avatar,
+    introduction = introduction,
+    memo = memo
+)

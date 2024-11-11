@@ -8,13 +8,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
@@ -101,39 +105,30 @@ fun StickerChangeScreen(cardId: String, navigator: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(scrollState)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Box(
+                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(180.dp),
-                        contentAlignment = Alignment.Center
+                            .padding(16.dp)
                     ) {
-                        StickerPreview(
-                            stickerRes,
-                            x = sticker.x,
-                            y = sticker.y,
-                            size = sticker.size,
-                            stickerColor = sticker.color
-                        )
-                    }
+                        StickerPreview(stickerRes, sticker)
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-                        when(screenType) {
+                        when (screenType) {
                             ScreenType.StickerType -> StickerTypeChange(stickerRes) { sticker = it }
                             ScreenType.StickerColor -> StickerColorChange(sticker) { sticker = it }
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.heightIn(min = 32.dp))
 
                 Button(
                     onClick = {
@@ -180,6 +175,32 @@ fun StickerChangeScreen(cardId: String, navigator: NavHostController) {
 }
 
 @Composable
+private fun StickerPreview(
+    stickerRes: ImageBitmap,
+    sticker: Sticker
+) {
+    Text("스티커 미리보기", modifier = Modifier.padding(start = 16.dp))
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp)
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(modifier = Modifier.size(72.dp)) {
+            StickerView(
+                stickerRes,
+                x = sticker.x,
+                y = sticker.y,
+                size = sticker.size,
+                stickerColor = sticker.color
+            )
+        }
+    }
+}
+
+@Composable
 private fun StickerTypeChange(
     stickerRes: ImageBitmap,
     onChange: (Sticker) -> Unit
@@ -187,9 +208,7 @@ private fun StickerTypeChange(
     val stickers: List<Sticker> = (0 until 16).map { Sticker(it, Color.LightGray) }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text("스티커 종류", modifier = Modifier.padding(start = 16.dp))
@@ -210,8 +229,14 @@ private fun StickerTypeChange(
                             for (j in 0 until 4) {
                                 val current = stickers[i * 4 + j]
 
-                                Box(modifier = Modifier.clickable { onChange(current.copy()) }) {
-                                    StickerPreview(
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .requiredWidthIn(max = 72.dp)
+                                        .aspectRatio(1f)
+                                        .clickable { onChange(current.copy()) }
+                                ) {
+                                    StickerView(
                                         stickerRes,
                                         x = current.x,
                                         y = current.y,
@@ -241,8 +266,7 @@ private fun StickerColorChange(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text("색상", modifier = Modifier.padding(start = 16.dp))
@@ -274,7 +298,7 @@ private fun StickerColorChange(
 }
 
 @Composable
-private fun StickerPreview(
+private fun StickerView(
     stickerRes: ImageBitmap,
     x: Int,
     y: Int,
@@ -284,7 +308,7 @@ private fun StickerPreview(
     Surface(
         shape = CircleShape,
         color = stickerColor,
-        modifier = Modifier.size(72.dp),
+        modifier = Modifier.fillMaxSize(),
         shadowElevation = 4.dp
     ) {
         Image(

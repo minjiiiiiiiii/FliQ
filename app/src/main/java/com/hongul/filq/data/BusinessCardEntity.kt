@@ -13,6 +13,7 @@ data class BusinessCardEntity(
     val id: Int,
     val owner: String,
 
+    val name: String,
     val title: String,
     @ColumnInfo(name = "phone_number")
     val phoneNumber: String,

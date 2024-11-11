@@ -24,4 +24,8 @@ interface BusinessCardDao {
 
     @Query("SELECT * from business_card WHERE owner = :owner")
     fun getAllBusinessCardByOwner(owner: String): Flow<List<BusinessCardEntity>>
+
+    // Demo 용도 테스트 쿼리
+    @Query("SELECT * from business_card")
+    fun getAllBusinessCard(): Flow<List<BusinessCardEntity>>
 }

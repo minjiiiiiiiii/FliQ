@@ -22,6 +22,8 @@ data class BusinessCard(
     val imagePath: String, // 명함 이미지 경로
     val avatar: Avatar, // 명함 프로필 이미지
     val introduction: String, // 명함 소개
+
+    val memo: String, // 명함 메모
 )
 
 sealed class SNS(

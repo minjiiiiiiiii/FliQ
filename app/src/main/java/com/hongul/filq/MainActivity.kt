@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FilQTheme(dynamicColor = false) {
                 Box(Modifier.safeDrawingPadding()) {
-                    NavigationGraph(navController = rememberNavController())
+                    FliQApp()
                 }
             }
         }

@@ -23,7 +23,7 @@ data class BusinessCard(
     val avatar: Avatar, // 명함 프로필 이미지
     val introduction: String, // 명함 소개
 
-    val memo: String, // 명함 메모
+    val memo: String = "", // 명함 메모
 )
 
 sealed class SNS(

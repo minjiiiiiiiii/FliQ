@@ -1,4 +1,4 @@
-package com.hongul.filq.ui
+package com.hongul.filq.ui.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement

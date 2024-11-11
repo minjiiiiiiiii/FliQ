@@ -9,9 +9,7 @@ class OfflineBusinessCardRepository(private val dao: BusinessCardDao) : Business
 
     override suspend fun delete(businessCardEntity: BusinessCardEntity) = dao.delete(businessCardEntity)
 
-    override fun get(id: Int, owner: String): Flow<BusinessCardEntity?> = dao.getBusinessCard(id, owner)
+    override fun getBusinessCard(id: Int): Flow<BusinessCardEntity?> = dao.getBusinessCard(id)
 
-    override fun getAllByOwner(owner: String): Flow<List<BusinessCardEntity>> = dao.getAllBusinessCardByOwner(owner)
-
-    override fun getAll(): Flow<List<BusinessCardEntity>> = dao.getAllBusinessCard()
+    override fun getAllBusinessCard(): Flow<List<BusinessCardEntity>> = dao.getAllBusinessCard()
 }

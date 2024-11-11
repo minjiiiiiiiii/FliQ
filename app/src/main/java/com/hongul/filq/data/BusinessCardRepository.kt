@@ -9,9 +9,7 @@ interface BusinessCardRepository {
 
     suspend fun delete(businessCardEntity: BusinessCardEntity)
 
-    fun get(id: Int, owner: String): Flow<BusinessCardEntity?>
+    fun getBusinessCard(id: Int): Flow<BusinessCardEntity?>
 
-    fun getAllByOwner(owner: String): Flow<List<BusinessCardEntity>>
-
-    fun getAll(): Flow<List<BusinessCardEntity>>
+    fun getAllBusinessCard(): Flow<List<BusinessCardEntity>>
 }

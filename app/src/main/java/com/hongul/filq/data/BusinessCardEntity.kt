@@ -2,16 +2,16 @@ package com.hongul.filq.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.SNS
 
 @Entity(
     tableName = "business_card",
-    primaryKeys = ["id", "owner"]
 )
 data class BusinessCardEntity(
-    val id: Int,
-    val owner: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
 
     val name: String,
     val title: String,
@@ -27,7 +27,5 @@ data class BusinessCardEntity(
     @ColumnInfo(name = "image_path")
     val imagePath: String,
     val avatar: Avatar,
-    val introduction: String,
-
-    val memo: String
+    val introduction: String
 )

@@ -19,13 +19,9 @@ interface BusinessCardDao {
     @Delete
     suspend fun delete(businessCardEntity: BusinessCardEntity)
 
-    @Query("SELECT * from business_card WHERE id = :id AND owner = :owner")
-    fun getBusinessCard(id: Int, owner: String): Flow<BusinessCardEntity>
+    @Query("SELECT * from business_card WHERE id = :id")
+    fun getBusinessCard(id: Int): Flow<BusinessCardEntity>
 
-    @Query("SELECT * from business_card WHERE owner = :owner")
-    fun getAllBusinessCardByOwner(owner: String): Flow<List<BusinessCardEntity>>
-
-    // Demo 용도 테스트 쿼리
     @Query("SELECT * from business_card")
     fun getAllBusinessCard(): Flow<List<BusinessCardEntity>>
 }

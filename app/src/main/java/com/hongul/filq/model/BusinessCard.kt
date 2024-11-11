@@ -6,9 +6,7 @@ import com.hongul.filq.R
 import com.hongul.filq.data.BusinessCardEntity
 
 data class BusinessCard(
-    // primary key(owner@id)
-    val id: String,
-
+    val id: Int = 0,
     val name: String, // 본명
     val title: String, // 명함 타이틀
     val phoneNumber: String, // 전화번호
@@ -22,8 +20,6 @@ data class BusinessCard(
     val imagePath: String, // 명함 이미지 경로
     val avatar: Avatar, // 명함 프로필 이미지
     val introduction: String, // 명함 소개
-
-    val memo: String = "", // 명함 메모
 )
 
 sealed class SNS(
@@ -70,31 +66,8 @@ data class Sticker(
 }
 
 // Model -> Entity 변환
-fun BusinessCard.toEntity(): BusinessCardEntity {
-    val (id, owner) = id.split("@")
-
-    return BusinessCardEntity(
-        id = id.toInt(),
-        owner = owner,
-        name = name,
-        title = title,
-        phoneNumber = phoneNumber,
-        email = email,
-        address = address,
-        organization = organization,
-        department = department,
-        position = position,
-        sns = sns,
-        imagePath = imagePath,
-        avatar = avatar,
-        introduction = introduction,
-        memo = memo
-    )
-}
-
-// Entity -> Model 변환
-fun BusinessCardEntity.toModel() = BusinessCard(
-    id = "$owner@$id",
+fun BusinessCard.toEntity() = BusinessCardEntity(
+    id = id,
     name = name,
     title = title,
     phoneNumber = phoneNumber,
@@ -106,6 +79,22 @@ fun BusinessCardEntity.toModel() = BusinessCard(
     sns = sns,
     imagePath = imagePath,
     avatar = avatar,
-    introduction = introduction,
-    memo = memo
+    introduction = introduction
+)
+
+// Entity -> Model 변환
+fun BusinessCardEntity.toModel() = BusinessCard(
+    id = id,
+    name = name,
+    title = title,
+    phoneNumber = phoneNumber,
+    email = email,
+    address = address,
+    organization = organization,
+    department = department,
+    position = position,
+    sns = sns,
+    imagePath = imagePath,
+    avatar = avatar,
+    introduction = introduction
 )

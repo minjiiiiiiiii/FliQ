@@ -41,7 +41,8 @@ object SNSConverter {
 object AvatarConverter {
     @TypeConverter
     fun fromAvatar(avatar: Avatar): String {
-        return "${avatar.path};${fromSticker(avatar.sticker)}"
+        val sticker = avatar.sticker?.let { "${it.pos}:${it.color.value}" } ?: ""
+        return "${avatar.path};${sticker}"
     }
 
     @TypeConverter
@@ -49,21 +50,11 @@ object AvatarConverter {
         val (path, sticker) = avatar.split(";")
         return Avatar(
             path = deserializeEmpty(path) { it },
-            sticker = deserializeEmpty(sticker, { toSticker(it) })
+            sticker = deserializeEmpty(sticker) {
+                val (pos, color) = it.split(":")
+                Sticker(pos.toInt(), Color(color.toULong()))
+            }
         )
-    }
-
-    @TypeConverter
-    fun fromSticker(sticker: Sticker?): String {
-        return sticker?.let { "${it.pos}:${it.color.value}" } ?: ""
-    }
-
-    @TypeConverter
-    fun toSticker(sticker: String): Sticker? {
-        return sticker.ifEmpty { null }?.let {
-            val (pos, color) = it.split(":")
-            Sticker(pos.toInt(), Color(color.toULong()))
-        }
     }
 
     private fun <T> deserializeEmpty(value: String, deserializer: (String) -> T): T? {

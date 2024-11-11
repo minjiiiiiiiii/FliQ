@@ -20,7 +20,7 @@ interface BusinessCardDao {
     suspend fun delete(businessCardEntity: BusinessCardEntity)
 
     @Query("SELECT * from business_card WHERE id = :id")
-    fun getBusinessCard(id: Int): Flow<BusinessCardEntity>
+    fun getBusinessCard(id: Int): Flow<BusinessCardEntity?>
 
     @Query("SELECT * from business_card")
     fun getAllBusinessCard(): Flow<List<BusinessCardEntity>>

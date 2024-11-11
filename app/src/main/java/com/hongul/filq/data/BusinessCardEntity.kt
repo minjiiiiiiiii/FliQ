@@ -1,9 +1,7 @@
 package com.hongul.filq.data
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.SNS
 
@@ -12,7 +10,6 @@ import com.hongul.filq.model.SNS
     primaryKeys = ["id", "owner"]
 )
 data class BusinessCardEntity(
-    @PrimaryKey(autoGenerate = true)
     val id: Int,
     val owner: String,
 
@@ -24,10 +21,11 @@ data class BusinessCardEntity(
     val organization: String,
     val department: String,
     val position: String,
-    @Embedded val sns: List<SNS>,
+    val sns: List<SNS>,
 
-    @ColumnInfo(name = "image_path") val imagePath: String,
-    @Embedded val avatar: Avatar,
+    @ColumnInfo(name = "image_path")
+    val imagePath: String,
+    val avatar: Avatar,
     val introduction: String,
 
     val memo: String

@@ -39,18 +39,22 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.hongul.filq.R
 import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.BusinessCard
 import com.hongul.filq.model.SNS
 import com.hongul.filq.model.Sticker
+import com.hongul.filq.ui.HomeViewModelProvider
 import com.hongul.filq.ui.theme.PrimaryDeepDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navigator: NavController) {
-
+fun HomeScreen(
+    navigator: NavController,
+    viewModel: HomeViewModel = viewModel(factory = HomeViewModelProvider.Factory)
+) {
     val title = stringResource(R.string.app_name)
 
     val cards = remember { mutableStateListOf<BusinessCard>() }

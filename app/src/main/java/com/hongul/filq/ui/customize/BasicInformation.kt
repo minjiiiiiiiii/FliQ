@@ -116,12 +116,12 @@ fun BasicInformation() {
                 // "0/20" 문자
                 Text(
                     text = "${name.value.length}/20",
-                    modifier = Modifier.padding(start = 320.dp, top = 0.dp),
+                    modifier = Modifier.padding(start = 360.dp, top = 0.dp),
                     style = androidx.compose.ui.text.TextStyle(fontSize = 13.sp, color = Color.Gray)
                 )
                 Text(
                     text = "*은 필수 사항입니다.",
-                    modifier = Modifier.padding(start = 240.dp, top = 0.dp),
+                    modifier = Modifier.padding(start = 280.dp, top = 0.dp),
                     style = androidx.compose.ui.text.TextStyle(fontSize = 13.sp, color = Color.Gray)
                 )
             }

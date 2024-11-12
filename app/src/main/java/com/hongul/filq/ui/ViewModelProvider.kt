@@ -6,11 +6,20 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.hongul.filq.FliQApplication
 import com.hongul.filq.ui.home.HomeViewModel
+import com.hongul.filq.ui.qr.QRCodeViewModel
 
 object HomeViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             HomeViewModel(application().container.businessCardRepository)
+        }
+    }
+}
+
+object QRCodeViewModelProvider {
+    val Factory = viewModelFactory {
+        initializer {
+            QRCodeViewModel(application().container.businessCardRepository)
         }
     }
 }

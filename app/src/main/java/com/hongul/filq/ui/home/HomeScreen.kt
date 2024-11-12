@@ -1,6 +1,5 @@
 package com.hongul.filq.ui.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +46,7 @@ import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.BusinessCard
 import com.hongul.filq.model.SNS
 import com.hongul.filq.ui.HomeViewModelProvider
+import com.hongul.filq.ui.share.CardShareRoute
 import com.hongul.filq.ui.theme.PrimaryDeepDark
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,7 +105,13 @@ fun HomeScreen(
                         )
                     },
                     modifier = Modifier.scale(0.8f),
-                    onClick = { }
+                    onClick = {
+                        if(pagerState.currentPage+1 < pagerState.pageCount) {
+                            navigator.navigate(
+                                CardShareRoute(cardId = cards[pagerState.currentPage].id)
+                            )
+                        }
+                    }
                 )
             }
         },

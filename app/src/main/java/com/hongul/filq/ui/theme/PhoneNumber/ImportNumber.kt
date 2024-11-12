@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -46,7 +48,6 @@ fun ContactImportScreen(modifier: Modifier = Modifier) {
     val filteredContacts = contacts.filter { it.contains(searchQuery) }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        // 검색창
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -56,7 +57,7 @@ fun ContactImportScreen(modifier: Modifier = Modifier) {
             verticalAlignment = CenterVertically
         ) {
             Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_search), // 돋보기 아이콘 리소스
+                imageVector = Icons.Default.Search,
                 contentDescription = "Search Icon",
                 modifier = Modifier.size(20.dp)
             )
@@ -77,7 +78,6 @@ fun ContactImportScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 연락처 리스트
         filteredContacts.forEach { contact ->
             Row(
                 modifier = Modifier
@@ -109,7 +109,6 @@ fun ContactImportScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 가져오기 버튼
         Button(
             onClick = { showDialog = true },
             colors = ButtonDefaults.buttonColors(
@@ -124,7 +123,6 @@ fun ContactImportScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    // 팝업 다이얼로그
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -150,5 +148,7 @@ fun ContactImportScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun ContactImportPreview() {
-    ContactImportScreen(Modifier.fillMaxSize())
+    MaterialTheme {
+        ContactImportScreen(Modifier.fillMaxSize())
+    }
 }

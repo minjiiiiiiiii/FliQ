@@ -55,16 +55,16 @@ fun ModifyBusinessCardScreen() {
                 BusinessCardItem(icon = R.drawable.ic_pencil, text = "비지니스명함")
                 BusinessCardItem(icon = R.drawable.ic_pencil, text = "xxx@stu.kmu.ac.kr")
                 BusinessCardItem(icon = R.drawable.ic_link, text = "@hongeol.hongeol")
-                BusinessCardItem(icon = R.drawable.ic_link, text = "@hongeol.hongeol")
-                BusinessCardItem(icon = R.drawable.ic_link, text = "@hongeol.hongeol")
-                BusinessCardItem(icon = R.drawable.ic_link, text = "@hongeol.hongeol")
-                BusinessCardItem(icon = R.drawable.ic_link, text = "@hongeol.hongeol")
+                BusinessCardItem(icon = R.drawable.ic_link, text = "hong")
+                BusinessCardItem(icon = R.drawable.ic_link, text = "//fliq")
+                BusinessCardItem(icon = R.drawable.ic_link, text = "http://digital.profile")
+                BusinessCardItem(icon = R.drawable.ic_link, text = "eofk-dfdr")
 
                 Spacer(modifier = Modifier.weight(1f)) // 빈 공간 남아있는 공간 전부
 
                 // 수정하기
                 Button(
-                    onClick = { /* 수정 기능 추가 */ },
+                    onClick = { /*수정으로 이동*/ },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
                     modifier = Modifier
                         .fillMaxWidth()

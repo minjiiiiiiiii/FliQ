@@ -12,15 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.hongul.filq.ui.home.ModifyBusinessCardScreen
+import com.hongul.filq.ui.home.ModifyBusinessCardScreen
+import com.hongul.filq.ui.home.ModifyBusinessCardScreenEdit
 import com.hongul.filq.ui.theme.FilQTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             FilQTheme {
-                ModifyBusinessCardScreen() //alt-enter
+                ModifyBusinessCardScreenEdit() //alt-enter
 
             }
         }

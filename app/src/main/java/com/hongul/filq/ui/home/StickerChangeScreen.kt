@@ -145,12 +145,7 @@ fun StickerChangeScreen(
                             }
                             ScreenType.StickerColor -> {
                                 viewModel.updateAvatar(cardId, Avatar(sticker = sticker))
-
-                                navigator.navigate("home") {
-                                    popUpTo(navigator.graph.startDestinationId) {
-                                        inclusive = true
-                                    }
-                                }
+                                navigator.popBackStack()
                             }
                         }
                     },

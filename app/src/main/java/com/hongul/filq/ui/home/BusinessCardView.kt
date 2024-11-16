@@ -92,6 +92,7 @@ fun EmptyBusinessCard(
 @Composable
 fun BusinessCardView(
     businessCard: BusinessCard,
+    onClickCardImage: () -> Unit,
     onClickProfileImage: () -> Unit
 ) {
     val context = LocalContext.current
@@ -106,7 +107,9 @@ fun BusinessCardView(
                             .decodeFile(imageFile.absolutePath)
                             .asImageBitmap(),
                         contentDescription = "명함 이미지",
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onClickCardImage),
                         contentScale = ContentScale.FillWidth
                     )
                 }
@@ -114,7 +117,9 @@ fun BusinessCardView(
                     Image(
                         bitmap = ImageBitmap.imageResource(R.drawable.test_card),
                         contentDescription = "명함 이미지",
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onClickCardImage),
                         contentScale = ContentScale.FillWidth
                     )
                 }

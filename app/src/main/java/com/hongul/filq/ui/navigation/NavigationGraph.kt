@@ -72,7 +72,7 @@ fun NavigationGraph(navController: NavHostController) {
                 val viewModel: CardShareViewModel = viewModel(
                     factory = CardShareViewModelProvider.factory(route.cardId),
                 )
-                CardShareScreen(viewModel)
+                CardShareScreen(navController, viewModel)
             }
         }
 

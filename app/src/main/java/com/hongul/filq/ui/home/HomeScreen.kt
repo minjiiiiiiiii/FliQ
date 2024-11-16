@@ -1,5 +1,6 @@
 package com.hongul.filq.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
@@ -22,8 +24,11 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.hongul.filq.R
 import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.BusinessCard
@@ -48,17 +56,69 @@ import com.hongul.filq.model.SNS
 import com.hongul.filq.ui.HomeViewModelProvider
 import com.hongul.filq.ui.share.CardShareRoute
 import com.hongul.filq.ui.theme.PrimaryDeepDark
+import com.hongul.filq.util.permissionList
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     navigator: NavController,
     viewModel: HomeViewModel = viewModel(factory = HomeViewModelProvider.Factory)
 ) {
+    val context = LocalContext.current
     val cards by viewModel.businessCards.collectAsState()
+    val shareRequest by viewModel.shareRequest.collectAsState()
     val pagerState = rememberPagerState(initialPage = 0) { cards.size+1 }
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = permissionList
+    )
 
     var isBottomSheetOpen by remember { mutableStateOf(false) }
+    var isAlertDialogOpen by remember { mutableStateOf(false) }
+
+    // TODO: 권한 부여 받을 시 startDiscovering 재실행
+    DisposableEffect(Unit) {
+        if(!permissionState.allPermissionsGranted) {
+            permissionState.launchMultiplePermissionRequest()
+        }
+        viewModel.startDiscovering(context)
+
+        onDispose {
+            viewModel.stopDiscovering(context)
+        }
+    }
+
+    LaunchedEffect(shareRequest) {
+        if(shareRequest != null) {
+            Log.d("shareRequest", shareRequest.toString())
+            isAlertDialogOpen = true
+        }
+    }
+
+    if(isAlertDialogOpen) {
+        AlertDialog(
+            title = { Text("${shareRequest!!.second}님이 명함을 공유중이에요.") },
+            text = { Text("명함을 확인해보세요.") },
+            onDismissRequest = {
+                isAlertDialogOpen = false
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    isAlertDialogOpen = false
+                    // TODO: 이름 처리
+                    viewModel.requestConnection(context, "")
+                }) {
+                    Text("수락")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    isAlertDialogOpen = false
+                }) {
+                    Text("거절")
+                }
+            }
+        )
+    }
 
     if(isBottomSheetOpen) {
         ChangeProfileBottomSheet(
@@ -157,6 +217,7 @@ fun HomeScreen(
                     })
                     else -> BusinessCardView(
                         businessCard = cards[page],
+                        onClickCardImage = { viewModel.delete(cards[page])},
                         onClickProfileImage = { isBottomSheetOpen = true }
                     )
                 }

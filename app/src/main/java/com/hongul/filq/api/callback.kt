@@ -9,6 +9,7 @@ import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
 import com.hongul.filq.api.NearbyApi.acceptConnection
+import com.hongul.filq.api.NearbyApi.sendPayload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -16,7 +17,8 @@ inline fun hostConnectionCallback(
     context: Context,
     coroutineScope: CoroutineScope,
     crossinline onReady: CoroutineScope.(id: String) -> Unit = {},
-    crossinline onError: CoroutineScope.() -> Unit = {}
+    crossinline onError: () -> Unit = {},
+    noinline onAfterSending: (reply: String) -> Unit = {},
 ) = object: ConnectionLifecycleCallback() {
     override fun onConnectionInitiated(id: String, info: ConnectionInfo) {
         coroutineScope.launch {
@@ -24,7 +26,11 @@ inline fun hostConnectionCallback(
                 context = context,
                 id = id,
                 callback = object: PayloadCallback() {
-                    override fun onPayloadReceived(id: String, payload: Payload) { }
+                    override fun onPayloadReceived(id: String, payload: Payload) {
+                        val bytes = payload.asBytes()!!
+                        val reply = bytes.toString(Charsets.UTF_8)
+                        coroutineScope.launch { onAfterSending(reply) }
+                    }
                     override fun onPayloadTransferUpdate(id: String, update: PayloadTransferUpdate) { }
                 }
             )
@@ -46,7 +52,7 @@ inline fun hostConnectionCallback(
 inline fun clientConnectionCallback(
     context: Context,
     coroutineScope: CoroutineScope,
-    crossinline onReceive: CoroutineScope.() -> Unit = {},
+    crossinline onReceive: CoroutineScope.(payload: Payload) -> Unit = {},
     crossinline onError: CoroutineScope.() -> Unit = {}
 ) = object: ConnectionLifecycleCallback() {
     override fun onConnectionInitiated(id: String, info: ConnectionInfo) {
@@ -56,7 +62,10 @@ inline fun clientConnectionCallback(
                 id = id,
                 callback = object: PayloadCallback() {
                     override fun onPayloadReceived(id: String, payload: Payload) {
-                        coroutineScope.launch { onReceive() }
+                        coroutineScope.launch {
+                            onReceive(payload)
+                            sendPayload(context, id, Payload.fromBytes("1".toByteArray()))
+                        }
                     }
 
                     override fun onPayloadTransferUpdate(p0: String, p1: PayloadTransferUpdate) { }
@@ -73,7 +82,5 @@ inline fun clientConnectionCallback(
         }
     }
 
-    override fun onDisconnected(p0: String) {
-        TODO("Not yet implemented")
-    }
+    override fun onDisconnected(p0: String) { }
 }

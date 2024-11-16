@@ -1,5 +1,5 @@
 package com.hongul.filq.ui.contact
-/*
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,11 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +29,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import com.hongul.filq.R
 import kotlinx.coroutines.launch
@@ -57,28 +57,28 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
             )
         }
     ) { innerPadding ->
-        Surface(modifier = Modifier.padding(innerPadding)) { // 기본 배경
+        Surface(modifier = Modifier.padding(innerPadding)) {
             val bottomSheetState = rememberBottomSheetScaffoldState(
                 bottomSheetState = rememberModalBottomSheetState()
             )
             val scope = rememberCoroutineScope()
-            var selectedCategory by remember { mutableStateOf(0) } // 카테고리 선택, 기본값: '개인' 버튼
-            var categories by remember { mutableStateOf(listOf("개인", "업무")) } // 초기 카테고리 리스트
-            var showBottomSheet by remember { mutableStateOf(false) } // BottomSheet 표시 여부 상태 변수 추가
-            var showDialog by remember { mutableStateOf(false) } // Dialog 표시 여부 상태 변수 추가
+            var selectedCategory by remember { mutableStateOf(0) }
+            var categories by remember { mutableStateOf(listOf("개인", "업무")) }
+            var showDeleteDialog by remember { mutableStateOf<Pair<Boolean, Int>>(false to -1) }
+
             BottomSheetScaffold(
                 scaffoldState = bottomSheetState,
                 sheetContent = {
                     Category(
                         onAddCategory = { newCategory ->
                             if (newCategory.isNotBlank()) {
-                                categories = categories + newCategory // 새로운 카테고리 추가
+                                categories = categories + newCategory
                                 scope.launch { bottomSheetState.bottomSheetState.hide() }
                             }
                         }
                     )
                 },
-                sheetPeekHeight = 0.dp // 처음에는 시트를 숨기기 위해 높이를 0으로 설정
+                sheetPeekHeight = 0.dp
             ) {
                 Column(
                     modifier = Modifier
@@ -88,25 +88,43 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                 ) {
                     Row {
                         categories.forEachIndexed { index, category ->
-                            Button(
-                                onClick = { selectedCategory = index },
-                                colors = ButtonDefaults.buttonColors(
-                                    if (selectedCategory == index) Color(0xFF125422) else Color.Transparent
-                                )
-                            ) {
-                                Text(
-                                    category,
-                                    color = if (selectedCategory == index) Color.White else Color.Black
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Button(
+                                    onClick = { selectedCategory = index },
+                                    colors = ButtonDefaults.buttonColors(
+                                        if (selectedCategory == index) Color(0xFF125422) else Color.Transparent
+                                    )
+                                ) {
+                                    Text(
+                                        category,
+                                        color = if (selectedCategory == index) Color.White else Color.Black
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(4.dp))
+
+                                // 삭제 버튼 (작은 X 아이콘)
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "삭제",
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .clickable {
+                                            showDeleteDialog = true to index
+                                        },
+                                    tint = Color.Red
                                 )
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                         }
 
-                        Button(
-                            colors = ButtonDefaults.buttonColors(Color.Transparent), // 투명색
-                            onClick = { scope.launch { bottomSheetState.bottomSheetState.expand() } }
-                        ) {
-                            Text("+", fontSize = 25.sp, color = Color.Black)
+                        // "+" 버튼: 카테고리 3개 이상이면 숨김
+                        if (categories.size < 3) {
+                            Button(
+                                colors = ButtonDefaults.buttonColors(Color.Transparent),
+                                onClick = { scope.launch { bottomSheetState.bottomSheetState.expand() } }
+                            ) {
+                                Text("+", fontSize = 25.sp, color = Color.Black)
+                            }
                         }
                     }
                 }
@@ -125,48 +143,62 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                     )
 
                     Text(
-                        "지인의 명함이나 연락처를 추가하여\n편리하게 관리하세요.",
+                        "지인과 명함을 주고받아 편리하게 관리하세요.",
                         fontSize = 12.sp,
                         color = Color.Gray,
-                        textAlign = TextAlign.Center, // 중앙 정렬
+                        textAlign = TextAlign.Center,
                         modifier = Modifier.padding(16.dp)
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        onClick = { showDialog = true },
+                        onClick = { /* 명함 추가 로직 */ },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(Color(0xFF125422))
                     ) {
-                        Text("연락처 추가하기")
-                    }
-
-
-
-                    if (showBottomSheet) { // showBottomSheet 상태가 true일 때 BottomSheet 표시
-                        BottomSheetScaffold(
-                            scaffoldState = bottomSheetState,
-                            sheetContent = {
-                                ContactBottomSheet(
-                                    onDismiss = { showBottomSheet = false } // 닫기 콜백 추가
-                                )
-                            },
-                            sheetPeekHeight = 0.dp // 처음에는 시트를 숨기기 위해 높이를 0으로 설정
-                        ) {
-                        }
-                    }
-
-                    if (showDialog) { // showDialog 상태가 true일 때 Dialog 표시
-                        ContactBottomSheet(onDismiss = { showDialog = false }) // onDismiss 콜백 추가
+                        Text("명함 추가하기")
                     }
                 }
+            }
+
+            // 삭제 확인 팝업
+            if (showDeleteDialog.first) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteDialog = false to -1 },
+                    title = { Text("카테고리 삭제") },
+                    text = {
+                        Text("카테고리에 있던 모든 명함이 함께 사라집니다. 삭제하시겠습니까?")
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            categories = categories.toMutableList().apply {
+                                removeAt(showDeleteDialog.second)
+                            }
+                            showDeleteDialog = false to -1
+                        }) {
+                            Text("삭제", color = Color.Red)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showDeleteDialog = false to -1
+                        }) {
+                            Text("취소")
+                        }
+                    }
+                )
             }
         }
     }
 }
 
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Category(onAddCategory: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
@@ -186,9 +218,15 @@ fun Category(onAddCategory: (String) -> Unit) {
                 .fillMaxWidth()
                 .background(Color.LightGray, shape = RoundedCornerShape(8.dp)), // 밝은 회색 배경
             shape = RoundedCornerShape(8.dp), // 둥근 모서리
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Button(
             onClick = {
@@ -219,34 +257,22 @@ fun ContactBottomSheet(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text("연락처를 저장하고 인맥을\n관리하세요", style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Gray,
+                Text("명함을 저장하고 인맥을\n관리하세요",
+                    style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center, // 중앙 정렬
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly // 아이템 사이와 양쪽 끝에 동일한 간격을 두고 아이템을 배치
-                ) {
-                    CircleIconButton(
-                        icon = Icons.Default.CameraAlt,
-                        size = 48.dp,
-                        onClick = { /* 카메라 촬영 클릭 처리 */ }
-                    )
-                    CircleIconButton (
-                        icon = Icons.Default.PhotoLibrary,
-                        size = 48.dp,
-                        onClick = {}
-                    )
-                    CircleIconButton(
-                        icon = Icons.Default.Edit,
-                        size = 48.dp,
-                        onClick = {}
-                    )
-                }
+                CircleIconButton(
+                    icon = ImageVector.vectorResource(R.drawable.ic_cameraalt),
+                    size = 48.dp,
+                    onClick = { /* 카메라 촬영 클릭 처리 */ }
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text("명함 촬영", fontSize = 10.sp)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -255,26 +281,12 @@ fun ContactBottomSheet(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
                     thickness = 1.5.dp,
                     modifier = Modifier.fillMaxWidth(0.8f) // 선의 길이를 부모 너비의 80%로 설정
                 )
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = { /* 버튼 클릭 처리 */ },
-                        colors = ButtonDefaults.buttonColors(Color.Transparent),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(Icons.Default.Phone, contentDescription = "전화 아이콘",
-                            modifier = Modifier.padding(3.dp), tint = Color.Black)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            "내 연락처에서 가져오기\n휴대폰에서 저장된 연락처를 가져오세요.",
-                            fontSize = 10.sp, color = Color.Black
-                        )
-                    }
-
-                }
+                Text(
+                    "명함과 대비되는 깔끔한 배경에서 촬영해 주세요.",
+                    fontSize = 12.sp, color = Color.Gray
+                )
             }
         }
 
@@ -311,6 +323,3 @@ fun ContactBottomSheetPreview() {
 fun PhoneNumberPreview() {
     PhoneNumberScreen(Modifier.fillMaxSize())
 }
-
-
-*/

@@ -1,15 +1,15 @@
 package com.hongul.filq.ui.home
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
 import com.hongul.filq.api.NearbyApi.requestConnection
-import com.hongul.filq.api.NearbyApi.startAdvertising
 import com.hongul.filq.api.NearbyApi.startDiscovering
+import com.hongul.filq.api.NearbyApi.stopDiscovering
 import com.hongul.filq.api.clientConnectionCallback
-import com.hongul.filq.api.hostConnectionCallback
 import com.hongul.filq.data.BusinessCardRepository
 import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.BusinessCard
@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class HomeViewModel(
     private val businessCardRepository: BusinessCardRepository
@@ -59,16 +60,6 @@ class HomeViewModel(
         }
     }
 
-    fun sendCard(context: Context, businessCard: BusinessCard) {
-        viewModelScope.launch {
-            startAdvertising(
-                context = context,
-                name = businessCard.name,
-                callback = hostConnectionCallback(context, viewModelScope)
-            )
-        }
-    }
-
     fun startDiscovering(context: Context) {
         viewModelScope.launch {
             startDiscovering(
@@ -90,8 +81,25 @@ class HomeViewModel(
                 context = context,
                 name = name,
                 id = shareRequest.value!!.first,
-                callback = clientConnectionCallback(context, viewModelScope)
+                callback = clientConnectionCallback(
+                    context,
+                    viewModelScope,
+                    onReceive = { payload ->
+                        val bytes = payload.asBytes()!!
+                        val message = bytes.toString(Charsets.UTF_8)
+                        Log.d("HomeViewModel", "onReceive: $message")
+                        insertCard(
+                            Json.decodeFromString<BusinessCard>(message)
+                        )
+                    }
+                )
             )
+        }
+    }
+
+    fun stopDiscovering(context: Context) {
+        viewModelScope.launch {
+            stopDiscovering(context)
         }
     }
 }

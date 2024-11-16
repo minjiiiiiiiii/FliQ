@@ -7,6 +7,7 @@ import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback
 import com.google.android.gms.nearby.connection.ConnectionOptions
 import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
+import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.Strategy
 import kotlinx.coroutines.CoroutineScope
@@ -45,6 +46,19 @@ object NearbyApi {
 
         Nearby.getConnectionsClient(context)
             .startDiscovery(SERVICE_ID, callback, option)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { onFailure() }
+    }
+
+    fun CoroutineScope.sendPayload(
+        context: Context,
+        id: String,
+        payload: Payload,
+        onSuccess: () -> Unit = {},
+        onFailure: () -> Unit = {}
+    ) = launch(Dispatchers.IO) {
+        Nearby.getConnectionsClient(context)
+            .sendPayload(id, payload)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onFailure() }
     }

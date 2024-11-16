@@ -4,7 +4,10 @@ import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.hongul.filq.R
 import com.hongul.filq.data.BusinessCardEntity
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class BusinessCard(
     val id: Int = 0,
     val name: String, // 본명
@@ -22,6 +25,8 @@ data class BusinessCard(
     val introduction: String, // 명함 소개
 )
 
+@Serializable(with = SNSSerializer::class)
+@SerialName("SNS")
 sealed class SNS(
     @DrawableRes val icon: Int,
     val link: String,
@@ -40,6 +45,7 @@ sealed class SNS(
     }
 }
 
+@Serializable
 data class Avatar(
     val path: String? = null,
     val sticker: Sticker? = null
@@ -52,8 +58,10 @@ data class Avatar(
         get() = !isImage && !isSticker
 }
 
+@Serializable
 data class Sticker(
     val pos: Int,
+    @Serializable(with = ColorSerializer::class)
     val color: Color
 ) {
     companion object {

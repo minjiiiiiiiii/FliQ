@@ -1,5 +1,6 @@
 package com.hongul.filq.ui
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
@@ -11,7 +12,10 @@ import com.hongul.filq.ui.share.CardShareViewModel
 object HomeViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
-            HomeViewModel(application().container.businessCardRepository)
+            HomeViewModel(
+                businessCardRepository = application().container.businessCardRepository,
+                context = application() as Context
+            )
         }
     }
 }

@@ -12,10 +12,7 @@ import com.hongul.filq.ui.share.CardShareViewModel
 object HomeViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
-            HomeViewModel(
-                businessCardRepository = application().container.businessCardRepository,
-                context = application() as Context
-            )
+            HomeViewModel(application().container.businessCardRepository)
         }
     }
 }

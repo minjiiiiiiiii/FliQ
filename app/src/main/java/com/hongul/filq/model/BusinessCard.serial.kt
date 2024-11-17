@@ -1,5 +1,6 @@
 package com.hongul.filq.model
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -63,7 +64,7 @@ object ColorSerializer: KSerializer<Color> {
         PrimitiveSerialDescriptor("androidx.compose.ui.graphics.Color", PrimitiveKind.LONG)
 
     override fun deserialize(decoder: Decoder): Color {
-        return Color(decoder.decodeLong())
+        return Color(decoder.decodeLong().toULong())
     }
 
     override fun serialize(encoder: Encoder, value: Color) {

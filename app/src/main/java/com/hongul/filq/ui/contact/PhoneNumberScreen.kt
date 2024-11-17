@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.res.painterResource
@@ -65,6 +63,20 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
             var selectedCategory by remember { mutableStateOf(0) }
             var categories by remember { mutableStateOf(listOf("개인", "업무")) }
             var showDeleteDialog by remember { mutableStateOf<Pair<Boolean, Int>>(false to -1) }
+            var showContactPopup by remember { mutableStateOf(false) } // 팝업 상태 추가
+
+            // 정렬 상태
+            var sortOrder by remember { mutableStateOf("이름순") }
+
+            // 명함 리스트
+            var personalContacts by remember {
+                mutableStateOf(
+                    listOf(
+                        Triple("홍추핑구", "+82 010 1234 5670", "zza@stu.kmu.ac.kr"),
+                        Triple("홍추핑", "+82 010 1234 5678", "zzz@stu.kmu.ac.kr")
+                    )
+                )
+            }
 
             BottomSheetScaffold(
                 scaffoldState = bottomSheetState,
@@ -81,12 +93,15 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                 sheetPeekHeight = 0.dp
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Row {
+                    // 카테고리 선택
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp, horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
                         categories.forEachIndexed { index, category ->
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Button(
@@ -102,7 +117,7 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                                 }
                                 Spacer(modifier = Modifier.width(4.dp))
 
-                                // 삭제 버튼 (작은 X 아이콘)
+                                // 삭제 버튼
                                 Icon(
                                     imageVector = Icons.Default.Close,
                                     contentDescription = "삭제",
@@ -117,7 +132,7 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                             Spacer(modifier = Modifier.width(10.dp))
                         }
 
-                        // "+" 버튼: 카테고리 3개 이상이면 숨김
+                        // "+" 버튼
                         if (categories.size < 3) {
                             Button(
                                 colors = ButtonDefaults.buttonColors(Color.Transparent),
@@ -127,44 +142,137 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                             }
                         }
                     }
-                }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.daemori_image),
-                        contentDescription = null,
-                        modifier = Modifier.size(200.dp)
-                    )
-
-                    Text(
-                        "지인과 명함을 주고받아 편리하게 관리하세요.",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = { /* 명함 추가 로직 */ },
+                    // 정렬 UI
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(Color(0xFF125422))
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("명함 추가하기")
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable {
+                                if (sortOrder == "이름순") {
+                                    sortOrder = "최근등록순"
+                                    personalContacts = personalContacts.reversed() // 최근등록순
+                                } else {
+                                    sortOrder = "이름순"
+                                    personalContacts = personalContacts.sortedBy { it.first } // 이름순
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.arrow_down_up),
+                                contentDescription = "정렬 아이콘",
+                                tint = Color(0xFF125422),
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                sortOrder,
+                                fontSize = 14.sp,
+                                color = Color(0xFF125422),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
+
+                    // 선택된 카테고리에 따라 내용 변경
+                    if (selectedCategory == 0) {
+                        // 개인 카테고리
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            personalContacts.forEach { contact ->
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
+                                    shape = RoundedCornerShape(30.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFD8F3DC))
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.daemori_image),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .size(40.dp)
+                                                .background(Color.LightGray, shape = CircleShape)
+                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+
+                                        Column {
+                                            Text(contact.first, fontWeight = FontWeight.Bold, fontSize = 16.sp,
+                                                color = Color(0xFF125422))
+                                            Divider(
+                                                color = Color(0xFF125422),
+                                                thickness = 1.dp,
+                                                modifier = Modifier.fillMaxWidth(0.9f)
+                                            )
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(contact.second, fontSize = 14.sp, color = Color(0xFF125422))
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(contact.third, fontSize = 14.sp, color = Color(0xFF125422))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // 업무 및 새로 추가된 카테고리
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.daemori_image),
+                                contentDescription = null,
+                                modifier = Modifier.size(200.dp)
+                            )
+
+                            Text(
+                                "지인과 명함을 주고받아 편리하게 관리하세요.",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Button(
+                                onClick = { showContactPopup = true }, // 팝업 표시
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(Color(0xFF125422))
+                            ) {
+                                Text("명함 추가하기")
+                            }
+                        }
+                    }
+                }
+
+                // ContactBottomSheet 팝업
+                if (showContactPopup) {
+                    ContactBottomSheet(onDismiss = { showContactPopup = false })
                 }
             }
 
-            // 삭제 확인 팝업
+            // 삭제 팝업
             if (showDeleteDialog.first) {
                 AlertDialog(
                     onDismissRequest = { showDeleteDialog = false to -1 },

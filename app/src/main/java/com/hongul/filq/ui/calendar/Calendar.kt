@@ -34,7 +34,9 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
+import com.hongul.filq.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +50,7 @@ fun CalendarScreen() {
     // 기본 일정 색상
     var defaultColor by remember { mutableStateOf(Color.Red.copy(alpha = 0.6f)) }
 
-    // 명함에 저장된 연락처 목록
+    // 명함에 저장된 연락처 목록 (기본 참여자)
     val contacts = remember {
         mutableStateListOf(
             Contact(id = 1, name = "홍추핑구", email = "pinggu@example.com"),
@@ -100,7 +102,9 @@ fun CalendarScreen() {
                     selectedDate = date
                 }
                 // 캘린더와 일정 목록 사이의 얇은 선
-                Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
+                Divider(color = Color.Gray, thickness = 1.dp,
+                    modifier = Modifier.fillMaxWidth(0.9f)
+                        .padding(vertical = 8.dp))
                 // 일정 목록
                 ScheduleList(
                     selectedDate = selectedDate,
@@ -113,16 +117,8 @@ fun CalendarScreen() {
                     ScheduleInput(
                         selectedDate,
                         defaultColor = defaultColor, // 기본 색상을 전달
-                        onAddSchedule = { scheduleTitle ->
-                            val newSchedule = Schedule(
-                                id = UUID.randomUUID().toString(),
-                                title = scheduleTitle,
-                                color = defaultColor, // 기본 색상 사용
-                                participants = mutableListOf()
-                            )
-                            // 새로운 일정 추가
-                            schedules.getOrPut(selectedDate!!) { mutableListOf() }.add(newSchedule)
-                        }
+                        schedules = schedules, // schedules 전달
+                        onAddSchedule = { /* 다른 추가 작업 필요 시 구현 */ }
                     )
                 }
             }
@@ -132,7 +128,7 @@ fun CalendarScreen() {
                 ScheduleEditScreen(
                     schedule = selectedSchedule!!,
                     contacts = contacts,
-                    defaultColor = defaultColor ?: Color.Red.copy(alpha = 0.6f), // 기본 색상 전달
+                    defaultColor = defaultColor,
                     onClose = { selectedSchedule = null },
                     onDelete = {
                         schedules[selectedDate]?.let { scheduleList ->
@@ -150,6 +146,7 @@ fun CalendarScreen() {
         }
     }
 }
+
 
 
 
@@ -178,7 +175,11 @@ fun CalendarHeader(currentMonth: YearMonth, onMonthChange: (Boolean) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = { onMonthChange(false) }) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = "이전 달")
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "이전 달",
+                tint = Color.Gray
+            )
         }
 
         Text(
@@ -189,7 +190,10 @@ fun CalendarHeader(currentMonth: YearMonth, onMonthChange: (Boolean) -> Unit) {
         )
 
         IconButton(onClick = { onMonthChange(true) }) {
-            Icon(Icons.Filled.ArrowForward, contentDescription = "다음 달")
+            Icon(Icons.Filled.ArrowForward,
+                contentDescription = "다음 달",
+                tint = Color.Gray
+            )
         }
     }
 }
@@ -365,14 +369,15 @@ fun ScheduleList(
 fun ScheduleInput(
     selectedDate: LocalDate?,
     defaultColor: Color, // 기본 색상 추가
-    onAddSchedule: (String) -> Unit
+    schedules: MutableMap<LocalDate, MutableList<Schedule>>, // schedules 전달
+    onAddSchedule: (Schedule) -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 70.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextField(
@@ -395,19 +400,30 @@ fun ScheduleInput(
         Spacer(modifier = Modifier.width(8.dp))
         IconButton(
             onClick = {
-                if (inputText.isNotBlank()) {
-                    onAddSchedule(inputText) // 일정 추가
-                    inputText = "" // 입력 필드 초기화
+                if (inputText.isNotBlank() && selectedDate != null) {
+                    // 새 일정 생성
+                    val newSchedule = Schedule(
+                        id = UUID.randomUUID().toString(),
+                        title = inputText,
+                        color = defaultColor, // 기본 색상
+                        participants = mutableListOf() // 빈 참여자 리스트
+                    )
+                    // schedules에 추가
+                    schedules.getOrPut(selectedDate) { mutableListOf() }.add(newSchedule)
+                    onAddSchedule(newSchedule) // 콜백 호출
+                    inputText = "" // 입력 초기화
                 }
             },
             modifier = Modifier
                 .size(48.dp)
-                .background(Color(0xFF1B5E20), shape = CircleShape) // 녹색으로 설정
+                .background(Color(0xFF1B5E20), shape = CircleShape) // 녹색 버튼
         ) {
             Icon(Icons.Filled.Add, contentDescription = "일정 추가", tint = Color.White)
         }
     }
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -421,8 +437,10 @@ fun ScheduleEditScreen(
 ) {
     var title by remember { mutableStateOf(schedule.title) }
     var color by remember { mutableStateOf(schedule.color) }
+    // 참여자 초기 상태를 빈 리스트로 설정
     val selectedParticipants = remember { mutableStateListOf<Contact>().apply { addAll(schedule.participants) } }
-    var showColorPicker by remember { mutableStateOf(false) } // ColorPickerDialog 표시 여부
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showColorPickerDialog by remember { mutableStateOf(false) } // 색상 선택 팝업 상태 추가
 
     Scaffold(
         topBar = {
@@ -437,13 +455,14 @@ fun ScheduleEditScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        onDelete()
-                        onClose()
-                    }) {
-                        Icon(Icons.Filled.Delete, contentDescription = "일정 삭제")
+                    IconButton(onClick = { showDeleteConfirmation = true }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.trash), // trash.xml
+                            contentDescription = "삭제"
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.White)
             )
         }
     ) { paddingValues ->
@@ -451,6 +470,7 @@ fun ScheduleEditScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(Color.White)
                 .padding(16.dp)
         ) {
             // 일정 이름과 색상
@@ -462,7 +482,7 @@ fun ScheduleEditScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .background(color, shape = CircleShape)
-                        .clickable { showColorPicker = true } // 클릭 시 ColorPickerDialog 표시
+                        .clickable { showColorPickerDialog = true } // 색상 선택 팝업 열기
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 TextField(
@@ -473,7 +493,6 @@ fun ScheduleEditScreen(
                     colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             // 참여자 선택
@@ -499,7 +518,11 @@ fun ScheduleEditScreen(
                             } else {
                                 selectedParticipants.remove(contact)
                             }
-                        }
+                        },
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = Color(0xFF1B5E20), // 녹색 체크박스
+                            uncheckedColor = Color.Gray
+                        )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "${contact.name} (${contact.email})")
@@ -515,25 +538,64 @@ fun ScheduleEditScreen(
                     schedule.participants.addAll(selectedParticipants)
                     onClose()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20)) // 녹색 저장 버튼
             ) {
-                Text("저장")
+                Text("저장", color = Color.White)
             }
         }
+    }
 
-        // ColorPickerDialog 팝업창
-        if (showColorPicker) {
-            ColorPickerDialog(
-                onColorSelected = { selectedColor ->
-                    color = selectedColor
-                    onColorChange(selectedColor) // 색상 변경 콜백 호출
-                    showColorPicker = false
-                },
-                onDismiss = { showColorPicker = false }
-            )
-        }
+    // 삭제 확인 팝업
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("일정을 삭제하시겠습니까?") },
+            text = { Text("확인을 누르면 일정이 완전히 삭제됩니다.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDelete()
+                        showDeleteConfirmation = false
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        containerColor = Color.Red, // 빨간색 확인 버튼
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier.height(40.dp)
+                ) {
+                    Text("확인")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteConfirmation = false },
+                    colors = ButtonDefaults.textButtonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("취소")
+                }
+            },
+            containerColor = Color.White
+        )
+    }
+
+    // 색상 선택 팝업
+    if (showColorPickerDialog) {
+        ColorPickerDialog(
+            onColorSelected = { selectedColor ->
+                color = selectedColor
+                showColorPickerDialog = false
+            },
+            onDismiss = { showColorPickerDialog = false }
+        )
     }
 }
+
+
+
 
 @Composable
 fun ColorPickerDialog(
@@ -666,8 +728,34 @@ fun CalendarScreenPreview() {
     CalendarScreen()
 }
 
+@Preview(showBackground = true, name = "Schedule Edit Preview")
+@Composable
+fun ScheduleEditScreenPreview() {
+    ScheduleEditScreen(
+        schedule = Schedule(
+            id = "1",
+            title = "팀 미팅",
+            color = Color.Blue.copy(alpha = 0.6f),
+            participants = mutableListOf(
+                Contact(id = 1, name = "홍추핑구", email = "pinggu@example.com"),
+                Contact(id = 2, name = "홍추핑", email = "ping@example.com")
+            )
+        ),
+        contacts = listOf(
+            Contact(id = 1, name = "홍추핑구", email = "pinggu@example.com"),
+            Contact(id = 2, name = "홍추핑", email = "ping@example.com"),
+            Contact(id = 3, name = "홍길동", email = "gil@example.com")
+        ),
+        defaultColor = Color.Red.copy(alpha = 0.6f),
+        onClose = {},
+        onDelete = {},
+        onColorChange = {}
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun ColorPickerDialogPreview() {
     ColorPickerDialog(onColorSelected = {}, onDismiss = {})
 }
+

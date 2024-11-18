@@ -1,6 +1,5 @@
 package com.hongul.filq.model
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

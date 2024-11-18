@@ -1,8 +1,5 @@
 package com.hongul.filq.ui.home
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -13,17 +10,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hongul.filq.ui.theme.FilQTheme
 import com.hongul.filq.R
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class BusinessCardMetaDataRoute(
+    val cardId: Int
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ModifyBusinessCardScreen() {
+fun BusinessCardMetaDataScreen() {
 
     // 세로방향
     Scaffold(
@@ -110,6 +111,6 @@ fun BusinessCardItem(icon: Int, text: String) {
 @Composable
 fun ModifyBusinessCardScreenPreview() {
     FilQTheme {
-        ModifyBusinessCardScreen()
+        BusinessCardMetaDataScreen()
     }
 }

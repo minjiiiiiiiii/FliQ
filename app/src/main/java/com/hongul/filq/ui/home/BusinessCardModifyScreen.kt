@@ -15,10 +15,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hongul.filq.ui.theme.FilQTheme
 import com.hongul.filq.R
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class BusinessCardModifyRoute(
+    val cardId: Int
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ModifyBusinessCardScreenEdit(onComplete: () -> Unit = {}) {
+fun BusinessCardModifyScreen(onComplete: () -> Unit = {}) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -105,6 +111,6 @@ fun BusinessCardItemEditable(icon: Int, initialText: String) {
 @Composable
 fun ModifyBusinessCardScreenEditPreview() {
     FilQTheme {
-        ModifyBusinessCardScreenEdit()
+        BusinessCardModifyScreen()
     }
 }

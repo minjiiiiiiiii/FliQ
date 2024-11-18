@@ -34,9 +34,16 @@ fun CalendarScreen() {
     val schedules = remember { mutableStateMapOf<LocalDate, MutableList<Schedule>>() }
     var selectedSchedule by remember { mutableStateOf<Schedule?>(null) }
 
-    var defaultColor by remember { mutableStateOf(Color.Red.copy(alpha = 0.6f)) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+
+    // 기본 참여자
+    val contacts = remember {
+        mutableStateListOf(
+            Contact(id = 1, name = "홍츄핑구", email = "pinggu@example.com"),
+            Contact(id = 2, name = "홍츄핑", email = "ping@example.com")
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -86,8 +93,8 @@ fun CalendarScreen() {
                     color = Color.Gray,
                     thickness = 1.dp,
                     modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .padding(vertical = 8.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp) // 좌우 여백 추가로 중앙 정렬
                 )
 
                 // 일정 목록
@@ -95,6 +102,9 @@ fun CalendarScreen() {
                     selectedDate = selectedDate,
                     schedules = schedules,
                     onScheduleClick = { schedule ->
+                        selectedSchedule = schedule // 일정 클릭 시 편집 화면으로 이동
+                    },
+                    onShareClick = {
                         coroutineScope.launch {
                             snackbarHostState.showSnackbar("URL이 복사되었습니다.")
                         }
@@ -102,28 +112,45 @@ fun CalendarScreen() {
                 )
             }
 
-            // ScheduleInput을 화면 하단에 고정
-            if (selectedDate != null) {
+            // 일정 수정 화면
+            if (selectedSchedule != null) {
+                ScheduleEditScreen(
+                    schedule = selectedSchedule!!,
+                    contacts = contacts, // 참여자 전달
+                    defaultColor = Color.Red.copy(alpha = 0.6f),
+                    onClose = { selectedSchedule = null },
+                    onDelete = {
+                        schedules[selectedDate]?.remove(selectedSchedule)
+                        selectedSchedule = null
+                    },
+                    onColorChange = { color ->
+                        selectedSchedule?.color = color
+                    }
+                )
+            }
+
+            // Snackbar (공유 버튼 클릭 시 화면 중앙에서 약간 아래로 표시)
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.Center) // 화면 중앙 정렬
+                    .padding(top = 550.dp) // 위에서 약간 아래로 이동
+            )
+
+            // 일정 추가 필드 (스케줄 수정 화면이 활성화되지 않은 경우에만 표시)
+            if (selectedDate != null && selectedSchedule == null) {
                 ScheduleInput(
                     selectedDate = selectedDate,
-                    defaultColor = defaultColor,
+                    defaultColor = Color.Red.copy(alpha = 0.6f),
                     schedules = schedules,
                     onAddSchedule = {
-                        // 스케줄 추가 로직
+                        // 추가 로직 구현 가능
                     },
                     modifier = Modifier
                         .align(Alignment.BottomCenter) // 하단 고정
                         .fillMaxWidth()
                 )
             }
-
-            // SnackbarHost를 화면 중간에 배치
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier
-                    .align(Alignment.Center) // 화면 중앙에 배치
-                    .padding(horizontal = 16.dp) // 좌우 여백 추가
-            )
         }
     }
 }
@@ -287,13 +314,10 @@ fun CalendarBody(
 fun ScheduleList(
     selectedDate: LocalDate?,
     schedules: Map<LocalDate, List<Schedule>>,
-    onScheduleClick: (Schedule) -> Unit
+    onScheduleClick: (Schedule) -> Unit, // 일정 클릭 동작
+    onShareClick: () -> Unit // 공유 버튼 클릭 동작
 ) {
-    // SnackbarHostState 초기화
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-
-    Box(modifier = Modifier.fillMaxSize()) { // Box를 사용하여 하단 배치 가능
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -320,8 +344,8 @@ fun ScheduleList(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { onScheduleClick(schedule) }
-                                .padding(vertical = 4.dp),
+                                .clickable { onScheduleClick(schedule) } // 일정 클릭 시 편집 화면으로 이동
+                                .padding(vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             // 일정 색상 원
@@ -333,7 +357,7 @@ fun ScheduleList(
                             Spacer(modifier = Modifier.width(8.dp))
                             Column(
                                 modifier = Modifier.weight(1f),
-                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
                                     text = schedule.title,
@@ -350,11 +374,9 @@ fun ScheduleList(
                             }
 
                             // 공유 아이콘
-                            IconButton(onClick = {
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("URL이 복사되었습니다.")
-                                }
-                            }) {
+                            IconButton(
+                                onClick = onShareClick // 공유 버튼 클릭 시 동작
+                            ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.share), // 공유 아이콘 리소스
                                     contentDescription = "공유",
@@ -366,14 +388,6 @@ fun ScheduleList(
                 }
             }
         }
-
-        // SnackbarHost 하단에 배치
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter) // Box 안에서 하단 배치
-                .padding(bottom = 16.dp) // 화면 하단 여백 추가
-        )
     }
 }
 
@@ -591,35 +605,7 @@ fun CalendarScreenPreview() {
 }
 
 
-@Preview(showBackground = true, name = "Schedule List Preview")
-@Composable
-fun ScheduleListPreview() {
-    ScheduleList(
-        selectedDate = LocalDate.of(2024, 11, 18), // 예시 날짜
-        schedules = mapOf(
-            LocalDate.of(2024, 11, 18) to listOf(
-                Schedule(
-                    id = "1",
-                    title = "팀 미팅",
-                    color = Color.Blue.copy(alpha = 0.6f),
-                    participants = mutableListOf(
-                        Contact(id = 1, name = "홍추핑구", email = "pinggu@example.com"),
-                        Contact(id = 2, name = "홍추핑", email = "ping@example.com")
-                    )
-                ),
-                Schedule(
-                    id = "2",
-                    title = "개인 일정",
-                    color = Color.Green.copy(alpha = 0.6f),
-                    participants = mutableListOf()
-                )
-            )
-        ),
-        onScheduleClick = { schedule ->
-            println("클릭된 일정: ${schedule.title}") // 클릭된 일정 로그
-        }
-    )
-}
+
 
 
 @Preview(showBackground = true)

@@ -34,6 +34,13 @@ import com.hongul.filq.ui.home.StickerChangeScreen
 import com.hongul.filq.ui.share.CardShareRoute
 import com.hongul.filq.ui.share.CardShareScreen
 import com.hongul.filq.ui.share.CardShareViewModel
+// SignUpScreens 부분에 필요한 임ㅍ트
+import com.hongul.filq.ui.login.SignUpScreens
+import com.hongul.filq.ui.login.PhoneInputScreen
+import com.hongul.filq.ui.login.EmailInputScreen
+import com.hongul.filq.ui.login.PasswordInputScreen
+import com.hongul.filq.ui.login.NameInputScreen
+import com.hongul.filq.ui.login.SignUpCompleteScreen
 
 sealed class NavItem(val route: String, val title: String, @DrawableRes val icon: Int) {
     data object Home : NavItem("home", "내 명함", R.drawable.ic_nav_home)
@@ -110,6 +117,38 @@ fun NavigationGraph(navController: NavHostController) {
                     }
                 )
             }
+            //회원가입 화면
+            composable(SignUpScreens.PhoneInput.route) {
+                showNavigationBar = false
+                PhoneInputScreen(
+                    onNext = { navController.navigate(SignUpScreens.EmailInput.route) }
+                )
+            }
+            composable(SignUpScreens.EmailInput.route) {
+                showNavigationBar = false
+                EmailInputScreen(
+                    onNext = { navController.navigate(SignUpScreens.NameInput.route) }
+                )
+            }
+            composable(SignUpScreens.NameInput.route) {
+                showNavigationBar = false
+                NameInputScreen(
+                    onNext = { navController.navigate(SignUpScreens.PasswordInput.route) }
+                )
+            }
+            composable(SignUpScreens.PasswordInput.route) {
+                showNavigationBar = false
+                PasswordInputScreen(
+                    onNext = { navController.navigate(SignUpScreens.Complete.route) }
+                )
+            }
+
+            composable(SignUpScreens.Complete.route) {
+                showNavigationBar = false
+                SignUpCompleteScreen(
+                    onNext = { navController.navigate("login_screen") } // 로그인 화면으로 인동
+                )
+            }
         }
 
         if (showNavigationBar) {
@@ -130,4 +169,3 @@ private fun PlaceHolder(title: String) {
         }
     )
 }
-

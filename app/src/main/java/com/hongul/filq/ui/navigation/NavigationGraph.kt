@@ -1,5 +1,6 @@
 package com.hongul.filq.ui.navigation
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.hongul.filq.R
 import com.hongul.filq.ui.CardShareViewModelProvider
+import com.hongul.filq.ui.customize.BusinessCardGenerateScreen
+//import com.hongul.filq.ui.customize.page.FaceBookURLPage
+//import com.hongul.filq.ui.customize.page.InstaGramURLPage
+import com.hongul.filq.ui.customize.page.PlusSnsPage
+import com.hongul.filq.ui.customize.page.SocialInfoPage
+import com.hongul.filq.ui.customize.page.URLPage
+//import com.hongul.filq.ui.customize.page.XURLPage
+//import com.hongul.filq.ui.customize.page.YoutubeURLPage
 import com.hongul.filq.ui.home.HomeScreen
 import com.hongul.filq.ui.home.StickerChangeRoute
 import com.hongul.filq.ui.home.StickerChangeScreen
@@ -45,7 +54,6 @@ fun NavigationGraph(navController: NavHostController) {
     Column(Modifier.fillMaxSize()) {
         var showNavigationBar by remember { mutableStateOf(false) }
 
-        // TODO: serializable 클래스로 루트 교체
         NavHost(
             navController = navController,
             startDestination = NavItem.Home.route,
@@ -74,12 +82,40 @@ fun NavigationGraph(navController: NavHostController) {
             }
             composable<CardShareRoute> {
                 showNavigationBar = false
-
                 val route = it.toRoute<CardShareRoute>()
                 val viewModel: CardShareViewModel = viewModel(
                     factory = CardShareViewModelProvider.factory(route.cardId),
                 )
-                CardShareScreen(viewModel)
+                CardShareScreen(navController, viewModel)
+            }
+            composable("generate") {
+                showNavigationBar = false
+                BusinessCardGenerateScreen(navController)
+            }
+            composable("social_info") {
+                showNavigationBar = false
+                SocialInfoPage(onNext = {
+                    navController.navigate("plus_sns") // PlusSns로 이동
+                })
+            }
+            composable("plus_sns") {
+                showNavigationBar = false
+                PlusSnsPage(
+                    onBack = { navController.popBackStack() },
+                    navController = navController
+                )
+            }
+//
+            composable("url_page/{title}") { backStackEntry ->
+                val title = backStackEntry.arguments?.getString("title") ?: "SNS"
+                URLPage(
+                    title = title,
+                    onBack = { navController.popBackStack() },
+                    onRegisterClick = { url ->
+                        Log.d("URLPage", "$title URL 등록됨: $url")
+                        navController.popBackStack()
+                    }
+                )
             }
             //회원가입 화면
             composable(SignUpScreens.PhoneInput.route) {
@@ -115,12 +151,12 @@ fun NavigationGraph(navController: NavHostController) {
             }
         }
 
-
-        if(showNavigationBar) {
+        if (showNavigationBar) {
             BottomNavigation(navController = navController)
         }
     }
 }
+
 
 @Composable
 private fun PlaceHolder(title: String) {

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.hongul.filq.ui.BusinessCardSetting
+package com.hongul.filq.ui.contact
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

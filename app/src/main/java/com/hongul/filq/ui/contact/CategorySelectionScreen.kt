@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.hongul.filq.ui.CategorySelection
+package com.hongul.filq.ui.contact
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

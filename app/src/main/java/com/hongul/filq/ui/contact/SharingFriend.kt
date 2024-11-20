@@ -1,4 +1,4 @@
-package com.hongul.filq.ui.BusinessCardSetting
+package com.hongul.filq.ui.contact
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,9 +24,6 @@ import com.hongul.filq.R
 import com.hongul.filq.model.Avatar
 import com.hongul.filq.model.BusinessCard
 import com.hongul.filq.model.SNS
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 
 
 @Composable

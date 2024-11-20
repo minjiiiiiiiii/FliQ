@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
-package com.hongul.filq.ui
+package com.hongul.filq.ui.more
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
@@ -19,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreScreen(
     onNavigateToMyPage: () -> Unit,

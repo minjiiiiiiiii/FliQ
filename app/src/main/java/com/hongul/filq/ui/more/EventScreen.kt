@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+package com.hongul.filq.ui.more
 
-package com.hongul.filq.ui
-
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
@@ -18,6 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.Alignment
 
 // 이벤트/공지사항 화면
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventScreen(onBack: () -> Unit, onNoticeClick: () -> Unit) {
     val selectedTabIndex = remember { mutableStateOf(0) }
@@ -139,6 +137,7 @@ fun NoticeContent(onNoticeClick: () -> Unit) {
 }
 
 // 공지사항 상세 화면
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoticeDetailScreen(onBack: () -> Unit) {
     Scaffold(

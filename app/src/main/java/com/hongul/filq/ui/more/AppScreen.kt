@@ -1,11 +1,8 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
-package com.hongul.filq.ui
+package com.hongul.filq.ui.more
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.material3.*
 
 @Composable
 fun AppScreen() {

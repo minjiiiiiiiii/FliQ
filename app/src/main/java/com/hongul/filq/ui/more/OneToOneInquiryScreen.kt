@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
-package com.hongul.filq.ui
+package com.hongul.filq.ui.more
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OneToOneInquiryScreen(onBack: () -> Unit, onSubmit: () -> Unit) {
     var email by remember { mutableStateOf("") }

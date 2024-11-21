@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
-package com.hongul.filq.ui
+package com.hongul.filq.ui.more
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -21,8 +19,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.style.TextAlign
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPageScreen(onBack: () -> Unit) {
     Scaffold(
@@ -91,7 +89,6 @@ fun ProfileInfo() {
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Text("@honggildong", style = MaterialTheme.typography.bodyMedium)
             }
         }
 

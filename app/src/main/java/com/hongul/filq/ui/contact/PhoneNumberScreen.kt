@@ -3,7 +3,9 @@ package com.hongul.filq.ui.contact
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Close
@@ -20,6 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -63,7 +68,7 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
             var selectedCategory by remember { mutableStateOf(0) }
             var categories by remember { mutableStateOf(listOf("개인", "업무")) }
             var showDeleteDialog by remember { mutableStateOf<Pair<Boolean, Int>>(false to -1) }
-            var showContactPopup by remember { mutableStateOf(false) } // 팝업 상태 추가
+            var showContactPopup by remember { mutableStateOf(false) }
 
             // 정렬 상태
             var sortOrder by remember { mutableStateOf("이름순") }
@@ -77,6 +82,7 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                     )
                 )
             }
+            var filteredContacts by remember { mutableStateOf(personalContacts) }
 
             BottomSheetScaffold(
                 scaffoldState = bottomSheetState,
@@ -92,20 +98,26 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                 },
                 sheetPeekHeight = 0.dp
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
+                Column(modifier = Modifier.fillMaxSize()) {
                     // 카테고리 선택
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 20.dp, horizontal = 16.dp),
+                            .padding(vertical = 20.dp, horizontal = 16.dp)
+                            .horizontalScroll(rememberScrollState()),
                         horizontalArrangement = Arrangement.Start
                     ) {
                         categories.forEachIndexed { index, category ->
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Button(
-                                    onClick = { selectedCategory = index },
+                                    onClick = {
+                                        selectedCategory = index
+                                        filteredContacts = if (index == 0) {
+                                            personalContacts // 개인 카테고리
+                                        } else {
+                                            listOf() // 업무 및 기타 카테고리는 빈 리스트
+                                        }
+                                    },
                                     colors = ButtonDefaults.buttonColors(
                                         if (selectedCategory == index) Color(0xFF125422) else Color.Transparent
                                     )
@@ -118,22 +130,24 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                                 Spacer(modifier = Modifier.width(4.dp))
 
                                 // 삭제 버튼
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "삭제",
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .clickable {
-                                            showDeleteDialog = true to index
-                                        },
-                                    tint = Color.Red
-                                )
+                                if (index >= 2) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "삭제",
+                                        modifier = Modifier
+                                            .size(16.dp)
+                                            .clickable {
+                                                showDeleteDialog = true to index
+                                            },
+                                        tint = Color.Red
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                         }
 
                         // "+" 버튼
-                        if (categories.size < 3) {
+                        if (categories.size < 5) {
                             Button(
                                 colors = ButtonDefaults.buttonColors(Color.Transparent),
                                 onClick = { scope.launch { bottomSheetState.bottomSheetState.expand() } }
@@ -142,6 +156,102 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                             }
                         }
                     }
+
+                    // 검색창 추가
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        var searchType by remember { mutableStateOf("이름") }
+                        var isDropdownExpanded by remember { mutableStateOf(false) }
+                        var searchQuery by remember { mutableStateOf("") }
+
+                        // 드롭다운 메뉴
+                        Box(
+                            modifier = Modifier
+                                .wrapContentSize(Alignment.TopStart)
+                                .clickable { isDropdownExpanded = !isDropdownExpanded }
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = searchType,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF125422)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_down_arrow),
+                                    contentDescription = "드롭다운 아이콘",
+                                    modifier = Modifier.size(16.dp),
+                                    tint = Color(0xFF125422)
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = isDropdownExpanded,
+                                onDismissRequest = { isDropdownExpanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    onClick = {
+                                        searchType = "이름"
+                                        isDropdownExpanded = false
+                                    },
+                                    text = { Text("이름") }
+                                )
+                                DropdownMenuItem(
+                                    onClick = {
+                                        searchType = "회사명"
+                                        isDropdownExpanded = false
+                                    },
+                                    text = { Text("회사명") }
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        // 검색 입력 필드
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = { Text("검색어 입력", fontSize = 13.sp) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(50.dp)
+                                .background(Color.LightGray, shape = RoundedCornerShape(8.dp)),
+                            colors = TextFieldDefaults.textFieldColors(
+                                containerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent,
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        // 검색 버튼
+                        Button(
+                            onClick = {
+                                filteredContacts = if (searchType == "이름") {
+                                    personalContacts.filter { it.first.contains(searchQuery, ignoreCase = true) }
+                                } else {
+                                    personalContacts.filter { it.third.contains(searchQuery, ignoreCase = true) }
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
+                            modifier = Modifier
+                                .height(50.dp)
+                                .background(Color.LightGray, shape = RoundedCornerShape(10.dp)),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text("검색", color = Color.White, fontSize = 13.sp)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     // 정렬 UI
                     Row(
@@ -156,10 +266,12 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                             modifier = Modifier.clickable {
                                 if (sortOrder == "이름순") {
                                     sortOrder = "최근등록순"
-                                    personalContacts = personalContacts.reversed() // 최근등록순
+                                    personalContacts = personalContacts.reversed()
+                                    filteredContacts = filteredContacts.reversed()
                                 } else {
                                     sortOrder = "이름순"
-                                    personalContacts = personalContacts.sortedBy { it.first } // 이름순
+                                    personalContacts = personalContacts.sortedBy { it.first }
+                                    filteredContacts = filteredContacts.sortedBy { it.first }
                                 }
                             }
                         ) {
@@ -179,16 +291,51 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                         }
                     }
 
-                    // 선택된 카테고리에 따라 내용 변경
-                    if (selectedCategory == 0) {
-                        // 개인 카테고리
+                    // 필터링된 명함 리스트
+                    if (filteredContacts.isEmpty()) {
+                        // 명함이 없을 때 중앙에 이미지와 버튼 표시
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.daemori_image),
+                                contentDescription = null,
+                                modifier = Modifier.size(200.dp)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "지인과 명함을 주고받아 편리하게 관리하세요.",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = { showContactPopup = true },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                            ) {
+                                Text("명함 추가하기", color = Color.White)
+                            }
+                        }
+                    } else {
+                        // 명함 리스트
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                                .verticalScroll(rememberScrollState()),
                             verticalArrangement = Arrangement.Top
                         ) {
-                            personalContacts.forEach { contact ->
+                            filteredContacts.forEach { contact ->
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -210,10 +357,13 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                                                 .background(Color.LightGray, shape = CircleShape)
                                         )
                                         Spacer(modifier = Modifier.width(16.dp))
-
                                         Column {
-                                            Text(contact.first, fontWeight = FontWeight.Bold, fontSize = 16.sp,
-                                                color = Color(0xFF125422))
+                                            Text(
+                                                contact.first,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 16.sp,
+                                                color = Color(0xFF125422)
+                                            )
                                             Divider(
                                                 color = Color(0xFF125422),
                                                 thickness = 1.dp,
@@ -228,81 +378,12 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                                 }
                             }
                         }
-                    } else {
-                        // 업무 및 새로 추가된 카테고리
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.daemori_image),
-                                contentDescription = null,
-                                modifier = Modifier.size(200.dp)
-                            )
-
-                            Text(
-                                "지인과 명함을 주고받아 편리하게 관리하세요.",
-                                fontSize = 12.sp,
-                                color = Color.Gray,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(16.dp)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Button(
-                                onClick = { showContactPopup = true }, // 팝업 표시
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(Color(0xFF125422))
-                            ) {
-                                Text("명함 추가하기")
-                            }
-                        }
                     }
                 }
-
-                // ContactBottomSheet 팝업
-                if (showContactPopup) {
-                    ContactBottomSheet(onDismiss = { showContactPopup = false })
-                }
-            }
-
-            // 삭제 팝업
-            if (showDeleteDialog.first) {
-                AlertDialog(
-                    onDismissRequest = { showDeleteDialog = false to -1 },
-                    title = { Text("카테고리 삭제") },
-                    text = {
-                        Text("카테고리에 있던 모든 명함이 함께 사라집니다. 삭제하시겠습니까?")
-                    },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            categories = categories.toMutableList().apply {
-                                removeAt(showDeleteDialog.second)
-                            }
-                            showDeleteDialog = false to -1
-                        }) {
-                            Text("삭제", color = Color.Red)
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = {
-                            showDeleteDialog = false to -1
-                        }) {
-                            Text("취소")
-                        }
-                    }
-                )
             }
         }
     }
 }
-
 
 
 

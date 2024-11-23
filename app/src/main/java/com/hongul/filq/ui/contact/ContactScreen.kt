@@ -32,6 +32,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import com.hongul.filq.R
@@ -40,21 +41,16 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PhoneNumberScreen(modifier: Modifier = Modifier) {
+fun ContactScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        "명함", fontSize = 20.sp, fontWeight = FontWeight.Bold,
-                        textDecoration = TextDecoration.Underline
-                    )
-                },
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = null
+                        text = "명함",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(horizontal = 10.dp)
                     )
                 }
             )
@@ -124,7 +120,8 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                                 ) {
                                     Text(
                                         category,
-                                        color = if (selectedCategory == index) Color.White else Color.Black
+                                        color = if (selectedCategory == index) Color.White else Color.Black,
+                                        fontSize = 18.sp
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -171,9 +168,10 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                         // 드롭다운 메뉴
                         Box(
                             modifier = Modifier
-                                .wrapContentSize(Alignment.TopStart)
+                                .height(40.dp) // 높이 고정
+                                .wrapContentSize(Alignment.CenterStart) // 내용 중앙 정렬
                                 .clickable { isDropdownExpanded = !isDropdownExpanded }
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                .padding(horizontal = 8.dp)
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
@@ -217,17 +215,28 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                         TextField(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
-                            placeholder = { Text("검색어 입력", fontSize = 13.sp) },
+                            placeholder = {
+                                Text(
+                                    text = "검색어 입력",
+                                    fontSize = 13.sp,
+                                    color = Color.Gray
+                                )
+                            },
                             modifier = Modifier
                                 .weight(1f)
-                                .height(50.dp)
-                                .background(Color.LightGray, shape = RoundedCornerShape(8.dp)),
+                                .height(56.dp) // 드롭다운과 버튼 높이와 동일하게 설정
+                                .background(Color.Transparent), // 배경 투명
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                            )
+                                containerColor = Color.Transparent, // 컨테이너 투명
+                                focusedIndicatorColor = Color(0xFF125422), // 초록색 밑줄 (포커스 시)
+                                unfocusedIndicatorColor = Color(0xFF125422), // 초록색 밑줄 (비포커스 시)
+                                disabledIndicatorColor = Color.Transparent // 비활성화 시
+                            ),
+                            textStyle = LocalTextStyle.current.copy(
+                                fontSize = 13.sp, // 텍스트 크기
+                                color = Color.Black
+                            ),
+                            shape = RoundedCornerShape(0.dp) // 모서리 제거
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -243,8 +252,8 @@ fun PhoneNumberScreen(modifier: Modifier = Modifier) {
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
                             modifier = Modifier
-                                .height(50.dp)
-                                .background(Color.LightGray, shape = RoundedCornerShape(10.dp)),
+                                .height(40.dp) // 드롭다운과 텍스트 필드 높이와 동일하게 설정
+                                .padding(horizontal = 8.dp),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text("검색", color = Color.White, fontSize = 13.sp)
@@ -509,6 +518,6 @@ fun ContactBottomSheetPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun PhoneNumberPreview() {
-    PhoneNumberScreen(Modifier.fillMaxSize())
+fun ContactScreenPreview() {
+    ContactScreen()
 }

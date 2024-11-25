@@ -67,7 +67,6 @@ fun CardShareScreen(
                         Toast.makeText(context, "명함을 전달했습니다!", Toast.LENGTH_SHORT).show()
                     else
                         Toast.makeText(context, "명함 전달에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    navigator.popBackStack()
                 }
             )
         }

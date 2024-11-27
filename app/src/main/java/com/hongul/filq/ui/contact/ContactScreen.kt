@@ -15,12 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -32,7 +30,6 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import com.hongul.filq.R
@@ -152,6 +149,18 @@ fun ContactScreen() {
                                 Text("+", fontSize = 25.sp, color = Color.Black)
                             }
                         }
+                    }
+
+                    // 삭제 팝업
+                    if (showDeleteDialog.first) {
+                        DeleteCategoryDialog(
+                            categoryName = categories[showDeleteDialog.second],
+                            onCancel = { showDeleteDialog = false to -1 },
+                            onDelete = {
+                                categories = categories.toMutableList().apply { removeAt(showDeleteDialog.second) }
+                                showDeleteDialog = false to -1
+                            }
+                        )
                     }
 
                     // 검색창 추가
@@ -394,6 +403,68 @@ fun ContactScreen() {
     }
 }
 
+@Composable
+fun DeleteCategoryDialog(
+    categoryName: String,
+    onCancel: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Dialog(onDismissRequest = { onCancel() }) {
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "\"$categoryName\" 카테고리를\n삭제하시겠습니까?",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                Text(
+                    text = "카테고리에 있는 명함은 모두 삭제됩니다.",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = onCancel,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .height(40.dp)
+                            .weight(1f)
+                    ) {
+                        Text("취소", color = Color.Black)
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(
+                        onClick = onDelete,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .height(40.dp)
+                            .weight(1f)
+                    ) {
+                        Text("삭제", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)

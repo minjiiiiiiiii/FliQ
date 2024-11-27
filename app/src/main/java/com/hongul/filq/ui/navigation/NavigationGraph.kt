@@ -84,7 +84,7 @@ fun NavigationGraph(navController: NavHostController) {
                 val viewModel: CardShareViewModel = viewModel(
                     factory = CardShareViewModelProvider.factory(route.cardId),
                 )
-                CardShareScreen(navController, viewModel)
+                CardShareScreen(viewModel)
             }
             composable("generate") {
                 showNavigationBar = false

@@ -43,7 +43,7 @@ fun TagScreen() {
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
             var searchQuery by remember { mutableStateOf("") }
-            val recommendedTags = listOf("#프론트", "#C++", "#파이썬", "#코틀린")
+            val recommendedTags = listOf("#프론트", "#C++", "#파이썬", "#코틀린", "#자바")
             val allContacts = listOf(
                 ContactCard(name = "홍박사", phone = "", email = "", statusMessage = "#자바 #홍"),
                 ContactCard(name = "홍추핑", phone = "", email = "", statusMessage = "#자바녀 #홍홍"),
@@ -195,7 +195,7 @@ fun TagScreen() {
                                     Divider( // 가로 선 추가
                                         color = Color(0xFF125422),
                                         thickness = 1.dp,
-                                        modifier = Modifier.fillMaxWidth(0.8f)
+                                        modifier = Modifier.fillMaxWidth(0.9f)
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(

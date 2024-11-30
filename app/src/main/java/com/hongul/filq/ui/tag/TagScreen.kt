@@ -121,21 +121,26 @@ fun TagScreen() {
                         .horizontalScroll(rememberScrollState())
                 ) {
                     recommendedTags.forEach { tag ->
-                        Text(
-                            text = tag,
-                            color = Color.Black,
+                        Box(
                             modifier = Modifier
+                                .height(40.dp) // 모든 태그 버튼의 높이를 동일하게 설정
                                 .background(Color.Transparent, shape = RoundedCornerShape(16.dp))
                                 .border(1.dp, Color.LightGray, shape = RoundedCornerShape(16.dp))
-                                .padding(horizontal = 12.dp, vertical = 8.dp)
                                 .clickable {
                                     searchQuery = tag
                                     filteredContacts = allContacts.filter { contact ->
                                         contact.statusMessage.contains(tag, ignoreCase = true)
                                     }
-                                },
-                            fontSize = 14.sp
-                        )
+                                }
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = tag,
+                                color = Color.Black,
+                                fontSize = 14.sp
+                            )
+                        }
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
@@ -185,6 +190,12 @@ fun TagScreen() {
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 16.sp,
                                         color = Color(0xFF125422)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Divider( // 가로 선 추가
+                                        color = Color(0xFF125422),
+                                        thickness = 1.dp,
+                                        modifier = Modifier.fillMaxWidth(0.8f)
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(

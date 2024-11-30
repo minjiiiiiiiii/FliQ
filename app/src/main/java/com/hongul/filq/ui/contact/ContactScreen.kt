@@ -36,6 +36,15 @@ import androidx.compose.ui.unit.Dp
 import com.hongul.filq.R
 import kotlinx.coroutines.launch
 
+
+// 명함 데이터 구조 수정 (상태 메시지 추가)
+data class ContactCard(
+    val name: String,
+    val phone: String,
+    val email: String,
+    val statusMessage: String // 상태 메시지
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactScreen() {
@@ -62,18 +71,25 @@ fun ContactScreen() {
             var categories by remember { mutableStateOf(listOf("전체", "즐겨찾기", "개인", "업무")) }
             var showDeleteDialog by remember { mutableStateOf<Pair<Boolean, Int>>(false to -1) }
             var showContactPopup by remember { mutableStateOf(false) }
-            // 추가: 즐겨찾기 데이터 관리
             var favoriteContacts by remember { mutableStateOf(setOf<String>()) }
-
-            // 정렬 상태
             var sortOrder by remember { mutableStateOf("이름순") }
 
             // 명함 리스트
             var personalContacts by remember {
                 mutableStateOf(
                     listOf(
-                        Triple("홍추핑구", "+82 010 1234 5670", "zza@stu.kmu.ac.kr"),
-                        Triple("홍추핑", "+82 010 1234 5678", "zzz@stu.kmu.ac.kr")
+                        ContactCard(
+                            name = "홍추핑구",
+                            phone = "+82 010 1234 5670",
+                            email = "zza@stu.kmu.ac.kr",
+                            statusMessage = "이번주는 바빠서 연락이 힘들 예정이니까 아무도 연락하지 마세요."
+                        ),
+                        ContactCard(
+                            name = "홍추핑",
+                            phone = "+82 010 1234 5678",
+                            email = "zzz@stu.kmu.ac.kr",
+                            statusMessage = "회의 중입니다. 나중에 연락드릴게요."
+                        )
                     )
                 )
             }
@@ -108,11 +124,11 @@ fun ContactScreen() {
                                     onClick = {
                                         selectedCategory = index
                                         filteredContacts = when (index) {
-                                            0 -> personalContacts // '전체' 카테고리
-                                            1 -> personalContacts.filter { it.first in favoriteContacts } // '즐겨찾기' 카테고리
-                                            2 -> personalContacts // '개인' 카테고리
-                                            3 -> personalContacts // '업무' 카테고리
-                                            else -> listOf() // 기타 카테고리
+                                            0 -> personalContacts // 전체 카테고리
+                                            1 -> personalContacts.filter { it.name in favoriteContacts } // 즐겨찾기
+                                            2 -> personalContacts // 개인 카테고리
+                                            3 -> emptyList() // 업무 카테고리
+                                            else -> emptyList()
                                         }
                                     },
                                     colors = ButtonDefaults.buttonColors(
@@ -127,16 +143,13 @@ fun ContactScreen() {
                                 }
                                 Spacer(modifier = Modifier.width(4.dp))
 
-                                // 삭제 버튼 (기본 카테고리 '개인'과 '업무'는 제외)
-                                if (index >= 4) { // 사용자 정의 카테고리만 삭제 가능
+                                if (index >= 4) {
                                     Icon(
                                         imageVector = Icons.Default.Close,
                                         contentDescription = "삭제",
                                         modifier = Modifier
                                             .size(16.dp)
-                                            .clickable {
-                                                showDeleteDialog = true to index
-                                            },
+                                            .clickable { showDeleteDialog = true to index },
                                         tint = Color.Red
                                     )
                                 }
@@ -144,7 +157,6 @@ fun ContactScreen() {
                             Spacer(modifier = Modifier.width(10.dp))
                         }
 
-                        // "+" 버튼
                         if (categories.size < 7) {
                             Button(
                                 colors = ButtonDefaults.buttonColors(Color.Transparent),
@@ -154,8 +166,6 @@ fun ContactScreen() {
                             }
                         }
                     }
-
-
 
                     // 삭제 팝업
                     if (showDeleteDialog.first) {
@@ -180,11 +190,10 @@ fun ContactScreen() {
                         var isDropdownExpanded by remember { mutableStateOf(false) }
                         var searchQuery by remember { mutableStateOf("") }
 
-                        // 드롭다운 메뉴
                         Box(
                             modifier = Modifier
-                                .height(40.dp) // 높이 고정
-                                .wrapContentSize(Alignment.CenterStart) // 내용 중앙 정렬
+                                .height(40.dp)
+                                .wrapContentSize(Alignment.CenterStart)
                                 .clickable { isDropdownExpanded = !isDropdownExpanded }
                                 .padding(horizontal = 8.dp)
                         ) {
@@ -221,12 +230,18 @@ fun ContactScreen() {
                                     },
                                     text = { Text("회사명") }
                                 )
+                                DropdownMenuItem(
+                                    onClick = {
+                                        searchType = "태그"
+                                        isDropdownExpanded = false
+                                    },
+                                    text = { Text("태그") }
+                                )
                             }
                         }
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        // 검색 입력 필드
                         TextField(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
@@ -239,49 +254,66 @@ fun ContactScreen() {
                             },
                             modifier = Modifier
                                 .weight(1f)
-                                .height(56.dp) // 드롭다운과 버튼 높이와 동일하게 설정
-                                .background(Color.Transparent), // 배경 투명
+                                .height(56.dp)
+                                .background(Color.Transparent),
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.Transparent, // 컨테이너 투명
-                                focusedIndicatorColor = Color(0xFF125422), // 초록색 밑줄 (포커스 시)
-                                unfocusedIndicatorColor = Color(0xFF125422), // 초록색 밑줄 (비포커스 시)
-                                disabledIndicatorColor = Color.Transparent // 비활성화 시
+                                containerColor = Color.Transparent,
+                                focusedIndicatorColor = Color(0xFF125422),
+                                unfocusedIndicatorColor = Color(0xFF125422),
+                                disabledIndicatorColor = Color.Transparent
                             ),
                             textStyle = LocalTextStyle.current.copy(
-                                fontSize = 13.sp, // 텍스트 크기
+                                fontSize = 13.sp,
                                 color = Color.Black
                             ),
-                            shape = RoundedCornerShape(0.dp) // 모서리 제거
+                            shape = RoundedCornerShape(0.dp)
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        // 검색 버튼
                         Button(
                             onClick = {
-                                filteredContacts = if (searchType == "이름") {
-                                    personalContacts.filter { it.first.contains(searchQuery, ignoreCase = true) }
-                                } else {
-                                    personalContacts.filter { it.third.contains(searchQuery, ignoreCase = true) }
+                                filteredContacts = when (searchType) {
+                                    "이름" -> personalContacts.filter {
+                                        it.name.contains(
+                                            searchQuery,
+                                            ignoreCase = true
+                                        )
+                                    }
+
+                                    "회사명" -> personalContacts.filter {
+                                        it.phone.contains(
+                                            searchQuery,
+                                            ignoreCase = true
+                                        )
+                                    }
+
+                                    "태그" -> personalContacts.filter {
+                                        it.email.contains(
+                                            searchQuery,
+                                            ignoreCase = true
+                                        )
+                                    }
+
+                                    else -> personalContacts
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
                             modifier = Modifier
-                                .height(40.dp) // 드롭다운과 텍스트 필드 높이와 동일하게 설정
+                                .height(40.dp)
                                 .padding(horizontal = 8.dp),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text("검색", color = Color.White, fontSize = 13.sp)
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // 정렬 UI
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 25.dp),
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -294,8 +326,8 @@ fun ContactScreen() {
                                     filteredContacts = filteredContacts.reversed()
                                 } else {
                                     sortOrder = "이름순"
-                                    personalContacts = personalContacts.sortedBy { it.first }
-                                    filteredContacts = filteredContacts.sortedBy { it.first }
+                                    personalContacts = personalContacts.sortedBy { it.name }
+                                    filteredContacts = filteredContacts.sortedBy { it.name }
                                 }
                             }
                         ) {
@@ -316,10 +348,62 @@ fun ContactScreen() {
                     }
 
                     // 필터링된 명함 리스트
-                    if (filteredContacts.isEmpty()) {
-                        // 명함이 없을 때 중앙 UI (기존 코드 유지)
+                    if (filteredContacts.isEmpty() && selectedCategory != 2) {
+                        if (selectedCategory == 1) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "즐겨찾기한 명함이 없습니다.",
+                                    fontSize = 16.sp,
+                                    color = Color.Gray,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.daemori_image),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(250.dp)
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Text(
+                                        text = "지인과 명함을 주고받아\n편리하게 관리하세요.",
+                                        textAlign = TextAlign.Center,
+                                        fontSize = 14.sp,
+                                        color = Color.Gray
+                                    )
+                                    Spacer(modifier = Modifier.height(50.dp))
+                                    Button(
+                                        onClick = { showContactPopup = true },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0xFF125422
+                                            )
+                                        ),
+                                        shape = RoundedCornerShape(8.dp),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 32.dp)
+                                            .height(53.dp)
+                                    ) {
+                                        Text(
+                                            "명함 추가하기",
+                                            color = Color.White,
+                                            fontSize = 16.sp,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     } else {
-                        // 명함 리스트
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -333,7 +417,11 @@ fun ContactScreen() {
                                         .fillMaxWidth()
                                         .padding(vertical = 8.dp),
                                     shape = RoundedCornerShape(30.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFD8F3DC))
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color(
+                                            0xFFD8F3DC
+                                        )
+                                    )
                                 ) {
                                     Row(
                                         modifier = Modifier
@@ -358,74 +446,73 @@ fun ContactScreen() {
                                         }
                                         Spacer(modifier = Modifier.width(16.dp))
                                         Column {
-                                            // 이름과 상태 메시지
                                             Row(
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 modifier = Modifier.fillMaxWidth()
                                             ) {
-                                                // 이름
                                                 Text(
-                                                    contact.first,
+                                                    contact.name,
                                                     fontWeight = FontWeight.Bold,
                                                     fontSize = 16.sp,
                                                     color = Color(0xFF125422)
                                                 )
-
-                                                // 이름과 상태 메시지 사이의 선
                                                 Spacer(modifier = Modifier.width(8.dp))
                                                 Divider(
                                                     color = Color(0xFF125422),
                                                     modifier = Modifier
-                                                        .height(18.dp) // 선의 높이를 상태 메시지 높이에 맞춤
+                                                        .height(18.dp)
                                                         .width(1.dp)
                                                 )
-
-                                                // 상태 메시지
                                                 Spacer(modifier = Modifier.width(8.dp))
                                                 Text(
-                                                    text = "이번주는 휴가입니다", // 상태 메시지
+                                                    text = if (contact.statusMessage.length > 20) {
+                                                        "${contact.statusMessage.take(20)}..."
+                                                    } else {
+                                                        contact.statusMessage
+                                                    },
                                                     fontSize = 12.sp,
                                                     color = Color.Gray
                                                 )
-
                                                 Spacer(modifier = Modifier.weight(1f))
-
-                                                // 즐겨찾기 아이콘
                                                 Icon(
-                                                    painter = if (contact.first in favoriteContacts) {
-                                                        painterResource(id = R.drawable.star_filled) // 채워진 별
+                                                    painter = if (contact.name in favoriteContacts) {
+                                                        painterResource(id = R.drawable.star_filled)
                                                     } else {
-                                                        painterResource(id = R.drawable.star_outline) // 외곽선 별
+                                                        painterResource(id = R.drawable.star_outline)
                                                     },
                                                     contentDescription = "즐겨찾기",
                                                     modifier = Modifier
                                                         .size(24.dp)
                                                         .clickable {
-                                                            if (contact.first in favoriteContacts) {
-                                                                favoriteContacts = favoriteContacts - contact.first
+                                                            if (contact.name in favoriteContacts) {
+                                                                favoriteContacts =
+                                                                    favoriteContacts - contact.name
                                                             } else {
-                                                                favoriteContacts = favoriteContacts + contact.first
+                                                                favoriteContacts =
+                                                                    favoriteContacts + contact.name
                                                             }
                                                         },
-                                                    tint = if (contact.first in favoriteContacts) Color(0xFF125422) else Color(0xFF125422) // 진한 녹색
+                                                    tint = Color(0xFF125422)
                                                 )
                                             }
-
-                                            // 이름과 아래 내용 사이의 선
                                             Divider(
                                                 color = Color(0xFF125422),
                                                 thickness = 1.dp,
                                                 modifier = Modifier.fillMaxWidth(0.9f)
                                             )
-
                                             Spacer(modifier = Modifier.height(4.dp))
-
-                                            // 연락처 정보
-                                            Text(contact.second, fontSize = 14.sp, color = Color(0xFF125422))
+                                            Text(
+                                                contact.phone,
+                                                fontSize = 14.sp,
+                                                color = Color(0xFF125422)
+                                            )
                                             Spacer(modifier = Modifier.height(4.dp))
-                                            Text(contact.third, fontSize = 14.sp, color = Color(0xFF125422))
+                                            Text(
+                                                contact.email,
+                                                fontSize = 14.sp,
+                                                color = Color(0xFF125422)
+                                            )
                                         }
-
                                     }
                                 }
                             }
@@ -436,6 +523,7 @@ fun ContactScreen() {
         }
     }
 }
+
 
 @Composable
 fun DeleteCategoryDialog(

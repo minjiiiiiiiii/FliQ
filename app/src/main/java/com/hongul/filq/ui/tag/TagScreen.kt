@@ -49,9 +49,9 @@ fun TagScreen() {
                 ContactCard(name = "홍추핑", phone = "", email = "", statusMessage = "#자바녀 #홍홍"),
                 ContactCard(name = "홍추핑구", phone = "", email = "", statusMessage = "#자바 #홍"),
                 ContactCard(name = "홍길동", phone = "", email = "", statusMessage = "#자바 #C"),
-                ContactCard(name = "김갑순", phone = "", email = "", statusMessage = "#자바 #C"),
+                ContactCard(name = "김갑순", phone = "", email = "", statusMessage = "#자바 #파이썬"),
                 ContactCard(name = "백수연", phone = "", email = "", statusMessage = "#자바 #C++"),
-                ContactCard(name = "윤주원", phone = "", email = "", statusMessage = "#자바녀 #홍"),
+                ContactCard(name = "윤주원", phone = "", email = "", statusMessage = "#자바녀 #프론트"),
                 ContactCard(name = "홍어루", phone = "", email = "", statusMessage = "#자바 #C")
             )
             var filteredContacts by remember { mutableStateOf(allContacts) }

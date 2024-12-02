@@ -1,5 +1,7 @@
 package com.hongul.filq.ui.tag
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,12 +23,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hongul.filq.R
 import com.hongul.filq.ui.contact.ContactCard
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TagScreen() {
+fun TagScreen(onAddFriendScreen: (String, String) -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -45,8 +51,8 @@ fun TagScreen() {
             var searchQuery by remember { mutableStateOf("") }
             val recommendedTags = listOf("#프론트", "#C++", "#파이썬", "#코틀린", "#자바")
             val allContacts = listOf(
+                ContactCard(name = "홍츄핑", phone = "", email = "", statusMessage = "#자바녀 #홍홍"),
                 ContactCard(name = "홍박사", phone = "", email = "", statusMessage = "#자바 #홍"),
-                ContactCard(name = "홍추핑", phone = "", email = "", statusMessage = "#자바녀 #홍홍"),
                 ContactCard(name = "홍추핑구", phone = "", email = "", statusMessage = "#자바 #홍"),
                 ContactCard(name = "홍길동", phone = "", email = "", statusMessage = "#자바 #C"),
                 ContactCard(name = "김갑순", phone = "", email = "", statusMessage = "#자바 #파이썬"),
@@ -57,17 +63,21 @@ fun TagScreen() {
             var filteredContacts by remember { mutableStateOf(allContacts) }
 
             Column(modifier = Modifier.fillMaxSize()) {
-                // 검색창 추가
+                // 검색창
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // 검색 입력 필드
                     TextField(
                         value = searchQuery,
-                        onValueChange = { searchQuery = it },
+                        onValueChange = {
+                            searchQuery = it
+                            filteredContacts = allContacts.filter { contact ->
+                                contact.statusMessage.contains(it, ignoreCase = true)
+                            }
+                        },
                         placeholder = {
                             Text(
                                 text = "태그 검색",
@@ -94,10 +104,8 @@ fun TagScreen() {
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    // 검색 버튼
                     Button(
                         onClick = {
-                            // 필터링 로직 실행 (태그 기준)
                             filteredContacts = allContacts.filter { contact ->
                                 contact.statusMessage.contains(searchQuery, ignoreCase = true)
                             }
@@ -111,41 +119,8 @@ fun TagScreen() {
                         Text("검색", color = Color.White, fontSize = 13.sp)
                     }
                 }
+
                 Spacer(modifier = Modifier.height(8.dp))
-
-                // 추천 태그
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    recommendedTags.forEach { tag ->
-                        Box(
-                            modifier = Modifier
-                                .height(40.dp) // 모든 태그 버튼의 높이를 동일하게 설정
-                                .background(Color.Transparent, shape = RoundedCornerShape(16.dp))
-                                .border(1.dp, Color.LightGray, shape = RoundedCornerShape(16.dp))
-                                .clickable {
-                                    searchQuery = tag
-                                    filteredContacts = allContacts.filter { contact ->
-                                        contact.statusMessage.contains(tag, ignoreCase = true)
-                                    }
-                                }
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = tag,
-                                color = Color.Black,
-                                fontSize = 14.sp
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
 
                 // 검색 결과 명함 리스트
                 Column(
@@ -155,13 +130,15 @@ fun TagScreen() {
                         .verticalScroll(rememberScrollState())
                 ) {
                     filteredContacts.forEach { contact ->
-                        Card(
-                            modifier = Modifier
+                        Card(modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFD8F3DC))
-                        ) {
+                                .padding(vertical = 8.dp)
+                            .clickable {
+                                // 명함 클릭 시 이름과 상태 메시지를 전달
+                                onAddFriendScreen(contact.name, contact.statusMessage)
+                            },
+                                shape = RoundedCornerShape (16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFD8F3DC))) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -192,7 +169,7 @@ fun TagScreen() {
                                         color = Color(0xFF125422)
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Divider( // 가로 선 추가
+                                    Divider(
                                         color = Color(0xFF125422),
                                         thickness = 1.dp,
                                         modifier = Modifier.fillMaxWidth(0.9f)
@@ -214,8 +191,5 @@ fun TagScreen() {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun TagScreenPreview() {
-    TagScreen()
-}
+
+

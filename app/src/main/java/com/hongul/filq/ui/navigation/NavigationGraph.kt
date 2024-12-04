@@ -40,6 +40,7 @@ import com.hongul.filq.ui.login.PasswordInputScreen
 import com.hongul.filq.ui.login.NameInputScreen
 import com.hongul.filq.ui.login.SignUpCompleteScreen
 import com.hongul.filq.ui.more.MoreScreen
+import com.hongul.filq.ui.tag.TagScreen
 
 sealed class NavItem(val route: String, val title: String, @DrawableRes val icon: Int) {
     data object Home : NavItem("home", "내 명함", R.drawable.ic_nav_home)
@@ -69,7 +70,7 @@ fun NavigationGraph(navController: NavHostController) {
             }
             composable(NavItem.Search.route) {
                 showNavigationBar = true
-                PlaceHolder("search")
+                TagScreen()
             }
             composable(NavItem.Calendar.route) {
                 showNavigationBar = true

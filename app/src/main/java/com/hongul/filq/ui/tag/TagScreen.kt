@@ -122,6 +122,39 @@ fun TagScreen(onAddFriendScreen: (String, String) -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // 추천 태그
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .horizontalScroll(rememberScrollState())
+                ) {
+                    recommendedTags.forEach { tag ->
+                        Box(
+                            modifier = Modifier
+                                .background(Color.Transparent, shape = RoundedCornerShape(16.dp))
+                                .border(1.dp, Color.LightGray, shape = RoundedCornerShape(16.dp))
+                                .clickable {
+                                    searchQuery = tag
+                                    filteredContacts = allContacts.filter { contact ->
+                                        contact.statusMessage.contains(tag, ignoreCase = true)
+                                    }
+                                }
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = tag,
+                                color = Color.Black,
+                                fontSize = 14.sp
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 // 검색 결과 명함 리스트
                 Column(
                     modifier = Modifier
@@ -130,15 +163,17 @@ fun TagScreen(onAddFriendScreen: (String, String) -> Unit) {
                         .verticalScroll(rememberScrollState())
                 ) {
                     filteredContacts.forEach { contact ->
-                        Card(modifier = Modifier
+                        Card(
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp)
-                            .clickable {
-                                // 명함 클릭 시 이름과 상태 메시지를 전달
-                                onAddFriendScreen(contact.name, contact.statusMessage)
-                            },
-                                shape = RoundedCornerShape (16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFD8F3DC))) {
+                                .clickable {
+                                    // 명함 클릭 시 이름과 상태 메시지를 전달
+                                    onAddFriendScreen(contact.name, contact.statusMessage)
+                                },
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFD8F3DC))
+                        ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -188,6 +223,14 @@ fun TagScreen(onAddFriendScreen: (String, String) -> Unit) {
             }
         }
     }
+}
+
+@Preview(showBackground = true, name = "TagScreen Preview")
+@Composable
+fun TagScreenPreview() {
+    TagScreen(onAddFriendScreen = { name, tags ->
+        Log.d("TagScreenPreview", "Selected Name: $name, Tags: $tags")
+    })
 }
 
 

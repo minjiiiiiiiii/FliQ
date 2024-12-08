@@ -38,7 +38,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactScreen() {
+fun ContactScreen(
+    viewModel: ContactViewModel
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -67,14 +69,7 @@ fun ContactScreen() {
             var sortOrder by remember { mutableStateOf("이름순") }
 
             // 명함 리스트
-            var personalContacts by remember {
-                mutableStateOf(
-                    listOf(
-                        Triple("홍추핑구", "+82 010 1234 5670", "zza@stu.kmu.ac.kr"),
-                        Triple("홍추핑", "+82 010 1234 5678", "zzz@stu.kmu.ac.kr")
-                    )
-                )
-            }
+            val personalContacts by viewModel.acceptedCards.collectAsState()
             var filteredContacts by remember { mutableStateOf(personalContacts) }
 
             BottomSheetScaffold(
@@ -253,11 +248,13 @@ fun ContactScreen() {
                         // 검색 버튼
                         Button(
                             onClick = {
-                                filteredContacts = if (searchType == "이름") {
-                                    personalContacts.filter { it.first.contains(searchQuery, ignoreCase = true) }
-                                } else {
-                                    personalContacts.filter { it.third.contains(searchQuery, ignoreCase = true) }
-                                }
+                                // TODO: 필터링
+//                                filteredContacts = if (searchType == "이름") {
+//                                    personalContacts.filter { it.first.contains(searchQuery, ignoreCase = true) }
+//                                } else {
+//                                    personalContacts.filter { it.third.contains(searchQuery, ignoreCase = true) }
+//                                }
+                                filteredContacts = personalContacts
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
                             modifier = Modifier
@@ -282,15 +279,16 @@ fun ContactScreen() {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable {
-                                if (sortOrder == "이름순") {
-                                    sortOrder = "최근등록순"
-                                    personalContacts = personalContacts.reversed()
-                                    filteredContacts = filteredContacts.reversed()
-                                } else {
-                                    sortOrder = "이름순"
-                                    personalContacts = personalContacts.sortedBy { it.first }
-                                    filteredContacts = filteredContacts.sortedBy { it.first }
-                                }
+                                // TODO: 정렬
+//                                if (sortOrder == "이름순") {
+//                                    sortOrder = "최근등록순"
+//                                    personalContacts = personalContacts.reversed()
+//                                    filteredContacts = filteredContacts.reversed()
+//                                } else {
+//                                    sortOrder = "이름순"
+//                                    personalContacts = personalContacts.sortedBy { it.first }
+//                                    filteredContacts = filteredContacts.sortedBy { it.first }
+//                                }
                             }
                         ) {
                             Icon(
@@ -377,7 +375,7 @@ fun ContactScreen() {
                                         Spacer(modifier = Modifier.width(16.dp))
                                         Column {
                                             Text(
-                                                contact.first,
+                                                contact.name,
                                                 fontWeight = FontWeight.Bold,
                                                 fontSize = 16.sp,
                                                 color = Color(0xFF125422)
@@ -388,9 +386,9 @@ fun ContactScreen() {
                                                 modifier = Modifier.fillMaxWidth(0.9f)
                                             )
                                             Spacer(modifier = Modifier.height(4.dp))
-                                            Text(contact.second, fontSize = 14.sp, color = Color(0xFF125422))
+                                            Text(contact.phoneNumber, fontSize = 14.sp, color = Color(0xFF125422))
                                             Spacer(modifier = Modifier.height(4.dp))
-                                            Text(contact.third, fontSize = 14.sp, color = Color(0xFF125422))
+                                            Text(contact.email, fontSize = 14.sp, color = Color(0xFF125422))
                                         }
                                     }
                                 }
@@ -590,5 +588,5 @@ fun ContactBottomSheetPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ContactScreenPreview() {
-    ContactScreen()
+//    ContactScreen()
 }

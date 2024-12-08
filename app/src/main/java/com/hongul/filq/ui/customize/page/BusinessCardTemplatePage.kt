@@ -22,9 +22,11 @@ import androidx.compose.ui.unit.sp
 import com.hongul.filq.R
 
 @Composable
-fun BusinessCardTemplatePage(  templates: List<Int>,
-                               onTemplateSelected: (Int) -> Unit,
-                               onBackClick: () -> Unit) {
+fun BusinessCardTemplatePage(
+    templates: List<Int>,
+    onTemplateSelected: (Int) -> Unit,
+    onBackClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()

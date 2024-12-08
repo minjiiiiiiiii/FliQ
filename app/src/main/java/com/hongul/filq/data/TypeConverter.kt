@@ -24,6 +24,8 @@ class SNSConverter {
 
     @TypeConverter
     fun toSNSList(sns: String): List<SNS> {
+        if(sns.isEmpty())
+            return listOf()
         return sns.split(",").map {
             val (type, link) = sns.split(";")
             when (type.toInt()) {

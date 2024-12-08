@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [BusinessCardEntity::class],
-    version = 1,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(

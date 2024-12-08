@@ -19,9 +19,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.hongul.filq.R
 import com.hongul.filq.ui.CardShareViewModelProvider
+import com.hongul.filq.ui.ContactViewModelProvider
+import com.hongul.filq.ui.CustomizeViewModelProvider
 import com.hongul.filq.ui.calendar.CalendarScreen
 import com.hongul.filq.ui.contact.ContactScreen
+import com.hongul.filq.ui.contact.ContactViewModel
 import com.hongul.filq.ui.customize.BusinessCardGenerateScreen
+import com.hongul.filq.ui.customize.CustomizeViewModel
 //import com.hongul.filq.ui.customize.page.FaceBookURLPage
 //import com.hongul.filq.ui.customize.page.InstaGramURLPage
 //import com.hongul.filq.ui.customize.page.XURLPage
@@ -65,7 +69,10 @@ fun NavigationGraph(navController: NavHostController) {
             }
             composable(NavItem.Contact.route) {
                 showNavigationBar = true
-                ContactScreen()
+                val viewModel: ContactViewModel = viewModel(
+                    factory = ContactViewModelProvider.Factory
+                )
+                ContactScreen(viewModel)
             }
             composable(NavItem.Search.route) {
                 showNavigationBar = true
@@ -94,7 +101,10 @@ fun NavigationGraph(navController: NavHostController) {
             }
             composable("generate") {
                 showNavigationBar = false
-                BusinessCardGenerateScreen(navController)
+                val viewModel: CustomizeViewModel = viewModel(
+                    factory = CustomizeViewModelProvider.Factory
+                )
+                BusinessCardGenerateScreen(navController, viewModel)
             }
             //회원가입 화면
             composable(SignUpScreens.PhoneInput.route) {

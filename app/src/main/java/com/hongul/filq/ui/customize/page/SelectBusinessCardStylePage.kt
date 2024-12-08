@@ -104,7 +104,8 @@ fun SelectBusinessCardStylePage(onNavigateToBusinessCard: () -> Unit, onNavigate
                             painter = painterResource(id = R.drawable.business_card_style),
                             contentDescription = "비즈니스 명함",
                             modifier = Modifier.fillMaxSize(), // 이미지가 박스를 꽉 채우도록 설정
-                            contentScale = ContentScale.Fit                        )
+                            contentScale = ContentScale.Fit
+                        )
                     }
                 }
             }

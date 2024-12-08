@@ -135,7 +135,7 @@ fun CardShareScreen(
                             contentColor = Color.Black
                         )
                     ) {
-                        val cardImage = ImageBitmap.imageResource(R.drawable.test_card)
+                        val cardImage = ImageBitmap.imageResource(R.drawable.bc34)
                         val qrImage = ImageBitmap.imageResource(R.drawable.test_qr)
 
                         Column(

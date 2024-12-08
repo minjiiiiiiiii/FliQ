@@ -1,13 +1,8 @@
 package com.hongul.filq.ui.customize.page
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -19,17 +14,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrganizationInfoPage(onNext: () -> Unit) {
-    val titlePadding = 121.dp
+fun OrganizationInfoPage(
+    onNext: () -> Unit,
+    updateInfo: (String, Any) -> Unit
+) {
     val progress = 0.5f
     val errorMessage = remember { mutableStateOf("") }
     Column(
@@ -62,24 +56,24 @@ fun OrganizationInfoPage(onNext: () -> Unit) {
             modifier = Modifier.padding(vertical = 20.dp)
         )
 
-        val organizationName = remember { mutableStateOf("") }
+        val organization = remember { mutableStateOf("") }
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                    text = buildAnnotatedString {
-                        append("기업 또는 단체명 ")
-                        withStyle(style = SpanStyle(color = Color.Red)) { // * 부분만 빨간색으로 설정
-                            append("*")
-                        }
-                    },
-            modifier = Modifier.padding(start = 5.dp, bottom = 4.dp),
-            fontWeight = FontWeight.Bold
+                text = buildAnnotatedString {
+                    append("기업 또는 단체명 ")
+                    withStyle(style = SpanStyle(color = Color.Red)) { // * 부분만 빨간색으로 설정
+                        append("*")
+                    }
+                },
+                modifier = Modifier.padding(start = 5.dp, bottom = 4.dp),
+                fontWeight = FontWeight.Bold
             )
 
             // 기업 또는 단체명 입력 필드
             OutlinedTextField(
-                value = organizationName.value,
-                onValueChange = { organizationName.value = it },
+                value = organization.value,
+                onValueChange = { organization.value = it },
                 placeholder = { Text("예) 계명대학교") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -94,7 +88,7 @@ fun OrganizationInfoPage(onNext: () -> Unit) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val departmentPosition = remember { mutableStateOf("") }
+        val department = remember { mutableStateOf("") }
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -110,8 +104,8 @@ fun OrganizationInfoPage(onNext: () -> Unit) {
 
             // 부서 / 직책 입력 필드
             OutlinedTextField(
-                value = departmentPosition.value,
-                onValueChange = { departmentPosition.value = it },
+                value = department.value,
+                onValueChange = { department.value = it },
                 placeholder = { Text("예 ) 컴퓨터공학과 / 5723483") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,7 +120,7 @@ fun OrganizationInfoPage(onNext: () -> Unit) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val additionalPosition = remember { mutableStateOf("") }
+        val position = remember { mutableStateOf("") }
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -141,10 +135,9 @@ fun OrganizationInfoPage(onNext: () -> Unit) {
             )
 
             OutlinedTextField(
-                value = additionalPosition.value,
-                onValueChange = { additionalPosition.value = it },
+                value = position.value,
+                onValueChange = { position.value = it },
                 placeholder = { Text("예 ) 기획부장") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -178,17 +171,20 @@ fun OrganizationInfoPage(onNext: () -> Unit) {
             Button(
                 onClick = {
                     when {
-                        organizationName.value.isBlank() -> {
+                        organization.value.isBlank() -> {
                             errorMessage.value = "기업 또는 단체명을 입력하세요."
                         }
-                        departmentPosition.value.isBlank() -> {
+                        department.value.isBlank() -> {
                             errorMessage.value = "부서 / 직책을 입력하세요."
                         }
-                        additionalPosition.value.isBlank() -> {
+                        position.value.isBlank() -> {
                             errorMessage.value = "추가 직책을 입력하세요."
                         }
                         else -> {
                             errorMessage.value = ""
+                            updateInfo("organization", organization.value)
+                            updateInfo("department", department.value)
+                            updateInfo("position", position.value)
                             onNext() // 모든 필드가 유효하면 다음으로 이동
                         }
                     }

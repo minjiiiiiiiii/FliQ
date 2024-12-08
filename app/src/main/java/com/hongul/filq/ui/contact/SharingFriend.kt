@@ -283,7 +283,6 @@ fun SharingFriendPreview() {
             SNS.Instagram("https://www.instagram.com/hongchuchuchu"),
             SNS.Facebook("https://kakao.com/hongpingchu")
         ),
-        imagePath = "image.png",
         avatar = Avatar(),
         introduction = "안녕하세요.\n계명대학교 재학중인 홍츄핑입니다!"
     )

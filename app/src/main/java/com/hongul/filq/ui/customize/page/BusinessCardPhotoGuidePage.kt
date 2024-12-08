@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hongul.filq.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusinessCardPhotoGuidePage(onBackClick: () -> Unit) {
 

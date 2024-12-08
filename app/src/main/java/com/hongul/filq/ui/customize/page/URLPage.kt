@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 fun URLPage(
     snsName: String, // SNS 이름 (예: Facebook, Instagram)
     onBack: () -> Unit, // 뒤로가기 콜백
-    onRegisterClick: (String) -> Unit // URL 등록 콜백
+    onRegisterClick: (String, String) -> Unit // URL 등록 콜백
 ) {
     val title = "$snsName " // SNS 이름에 따라 동적으로 설정된 타이틀
     val urlState = remember { mutableStateOf("") } // URL 입력 상태
@@ -72,7 +72,7 @@ fun URLPage(
             contentAlignment = Alignment.BottomCenter
         ) {
             Button(
-                onClick = { onRegisterClick(urlState.value) },
+                onClick = { onRegisterClick(snsName, urlState.value) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

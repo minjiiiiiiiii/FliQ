@@ -99,7 +99,7 @@ fun BusinessCardView(
 
     BusinessCardLayout(
         businessCardView = {
-            val imageFile = context.filesDir.resolve(businessCard.imagePath)
+            val imageFile = context.filesDir.resolve("businessCard.imagePath")
             when(imageFile.exists()) {
                 true -> {
                     Image(
@@ -115,7 +115,7 @@ fun BusinessCardView(
                 }
                 else -> {
                     Image(
-                        bitmap = ImageBitmap.imageResource(R.drawable.test_card),
+                        bitmap = ImageBitmap.imageResource(R.drawable.bc34),
                         contentDescription = "명함 이미지",
                         modifier = Modifier
                             .fillMaxWidth()

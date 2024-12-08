@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BusinessCard(
     val id: Int = 0,
+    val owner: Int = 3,
     val name: String, // 본명
     val title: String, // 명함 타이틀
     val phoneNumber: String, // 전화번호
@@ -20,7 +21,6 @@ data class BusinessCard(
     val position: String, // 직책
     val sns: List<SNS>, // 소셜 계정 목록
 
-    val imagePath: String, // 명함 이미지 경로
     val avatar: Avatar, // 명함 프로필 이미지
     val introduction: String, // 명함 소개
 )
@@ -76,6 +76,7 @@ data class Sticker(
 // Model -> Entity 변환
 fun BusinessCard.toEntity() = BusinessCardEntity(
     id = id,
+    owner = owner,
     name = name,
     title = title,
     phoneNumber = phoneNumber,
@@ -85,7 +86,6 @@ fun BusinessCard.toEntity() = BusinessCardEntity(
     department = department,
     position = position,
     sns = sns,
-    imagePath = imagePath,
     avatar = avatar,
     introduction = introduction
 )
@@ -93,6 +93,7 @@ fun BusinessCard.toEntity() = BusinessCardEntity(
 // Entity -> Model 변환
 fun BusinessCardEntity.toModel() = BusinessCard(
     id = id,
+    owner = owner,
     name = name,
     title = title,
     phoneNumber = phoneNumber,
@@ -102,7 +103,6 @@ fun BusinessCardEntity.toModel() = BusinessCard(
     department = department,
     position = position,
     sns = sns,
-    imagePath = imagePath,
     avatar = avatar,
     introduction = introduction
 )

@@ -2,6 +2,7 @@ package com.hongul.filq.ui.home
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
@@ -30,10 +31,12 @@ class HomeViewModel(
     private val _shareRequest = MutableStateFlow<Pair<String, String>?>(null)
     val shareRequest = _shareRequest.asStateFlow()
 
-    val businessCards = businessCardRepository.getAllBusinessCard()
+    val myCards = businessCardRepository.getAllBusinessCard()
         .map { cardList ->
             cardList.map { cardEntity ->
                 cardEntity.toModel()
+            }.filter { card ->
+                card.owner == 3
             }
         }
         .stateIn(
@@ -87,7 +90,8 @@ class HomeViewModel(
                     onReceive = { payload ->
                         val bytes = payload.asBytes()!!
                         val message = bytes.toString(Charsets.UTF_8)
-                        Log.d("HomeViewModel", "onReceive: $message")
+                        Log.d("req", "sibal")
+                        Toast.makeText(context, "명함을 전달 받았습니다.", Toast.LENGTH_SHORT).show()
                         insertCard(
                             Json.decodeFromString<BusinessCard>(message)
                         )

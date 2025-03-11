@@ -1,4 +1,4 @@
-package com.hongul.filq
+package com.hongul.fliq
 
 import org.junit.Test
 

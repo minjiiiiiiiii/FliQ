@@ -1,4 +1,4 @@
-package com.hongul.filq.ui.theme
+package com.hongul.fliq.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

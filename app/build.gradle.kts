@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.hongul.filq"
-    compileSdk = 34
+    namespace = "com.hongul.fliq"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.hongul.filq"
-        minSdk = 28
-        targetSdk = 34
+        applicationId = "com.hongul.fliq"
+        minSdk = 26
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -43,15 +43,12 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.google.accompanist.permissions)
-    implementation(libs.play.services.nearby)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

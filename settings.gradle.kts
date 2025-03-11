@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "FilQ"
+rootProject.name = "FliQ"
 include(":app")
- 

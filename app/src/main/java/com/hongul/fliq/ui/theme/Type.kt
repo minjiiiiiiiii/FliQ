@@ -4,35 +4,54 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.hongul.fliq.R
 
 val Pretendard = FontFamily(Font(R.font.pretendard))
 
-// Set of Material typography styles to start with
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
+    displayLarge = TextStyle(
+        fontFamily = Pretendard
+    ),
+    displayMedium = TextStyle(
+        fontFamily = Pretendard
+    ),
+    displaySmall = TextStyle(
+        fontFamily = Pretendard
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = Pretendard
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = Pretendard
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = Pretendard
+    ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
+        fontFamily = Pretendard
+    ),
+    titleMedium = TextStyle(
+        fontFamily = Pretendard
+    ),
+    titleSmall = TextStyle(
+        fontFamily = Pretendard
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = Pretendard
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = Pretendard
+    ),
+    bodySmall = TextStyle(
+        fontFamily = Pretendard
+    ),
+    labelLarge = TextStyle(
+        fontFamily = Pretendard
+    ),
+    labelMedium = TextStyle(
+        fontFamily = Pretendard
     ),
     labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        fontFamily = Pretendard
     )
-    */
 )

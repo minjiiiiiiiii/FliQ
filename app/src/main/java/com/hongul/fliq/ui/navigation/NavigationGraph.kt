@@ -20,7 +20,7 @@ fun ColumnScope.NavigationGraph(
     ) {
         composable(NavItem.Home.route) {
             showNavigation(true)
-            HomeScreen()
+            HomeScreen(navigator = navController)
         }
         composable(NavItem.Contact.route) {
             showNavigation(true)

@@ -39,7 +39,7 @@ object HomeStyles {
         @Composable
         fun Modifier.content() = this
             .fillMaxSize()
-            .padding(top = 120.dp)
+            .padding(top = 60.dp)
 
         @Composable
         fun Modifier.cardPager() = this

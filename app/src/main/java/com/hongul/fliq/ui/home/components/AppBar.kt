@@ -1,8 +1,5 @@
 package com.hongul.fliq.ui.home.components
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.List
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -12,6 +9,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +22,9 @@ fun AppBar(
     title: String,
     actions: Map<ImageVector, () -> Unit> = mapOf()
 ) {
+    val localConfig = LocalConfiguration.current
+    val heightDp = localConfig.screenHeightDp
+
     TopAppBar(
         modifier = Modifier.appBar(),
         title = {
@@ -32,7 +33,9 @@ fun AppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = HomeStyles.Colors.rootBackground
         ),
-        expandedHeight = 120.dp,
+        expandedHeight =
+            if (heightDp <= 840) 80.dp
+            else 120.dp,
         actions = {
             for((icon, onClick) in actions) {
                 IconButton(onClick = onClick) {

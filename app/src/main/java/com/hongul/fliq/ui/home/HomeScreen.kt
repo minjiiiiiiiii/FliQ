@@ -84,6 +84,7 @@ fun HomeScreen(
             Column(
                 modifier = Modifier.content()
             ) {
+
                 val cardList = listOf(1,2,3)
                 val pagerState = rememberPagerState { cardList.size + 1 }
 

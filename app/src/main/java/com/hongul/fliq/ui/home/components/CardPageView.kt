@@ -104,7 +104,7 @@ fun CreateCardPageView(
                     "나만의 브랜드를 담은\n나만의 명함을 직접 만들어보세요.",
                     textAlign = TextAlign.Center,
                     color = HomeStyles.Colors.createCardContent,
-                    fontSize = 18.sp
+                    fontSize = 16.sp
                 )
             }
         }

@@ -71,6 +71,10 @@ object HomeStyles {
             .size(32.dp)
 
         @Composable
+        fun Modifier.progressIndicator() = this
+            .padding(top = 60.dp)
+
+        @Composable
         fun Modifier.actions() = this
             .fillMaxWidth()
             .padding(horizontal = 16.dp)

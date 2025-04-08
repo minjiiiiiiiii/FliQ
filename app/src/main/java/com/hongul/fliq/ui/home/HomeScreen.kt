@@ -29,6 +29,7 @@ import com.hongul.fliq.R
 import com.hongul.fliq.ui.home.components.AppBar
 import com.hongul.fliq.ui.home.components.CardPageView
 import com.hongul.fliq.ui.home.components.CreateCardPageView
+import com.hongul.fliq.ui.home.components.InnerContentMode
 import com.hongul.fliq.ui.home.styles.HomeStyles
 import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.cardPager
 import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.container
@@ -97,11 +98,14 @@ fun HomeScreen(
                     state = pagerState,
                     pageSpacing = 16.dp,
                     verticalAlignment = Alignment.Top
-                ) {
-                    when(it) {
-                        pagerState.pageCount-1 -> CreateCardPageView()
-                        else -> CardPageView(
-                            showInnerContent = showInnerContent
+                ) { page ->
+                    if(page == pagerState.pageCount-1) {
+                        CreateCardPageView()
+                    } else {
+                        CardPageView(
+                            innerContentMode =
+                                if (showInnerContent) InnerContentMode.SHOW
+                                else InnerContentMode.PENDING
                         )
                     }
                 }

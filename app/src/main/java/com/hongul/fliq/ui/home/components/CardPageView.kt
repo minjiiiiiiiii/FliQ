@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,12 +28,13 @@ import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.cardContainer
 import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.cardPage
 import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.createCardIcon
 import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.createCardInner
+import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.progressIndicator
 
 @Composable
 fun CardPageView(
     // TODO: 실제 ImageFile 주입
     cardImagePath: String? = null,
-    showInnerContent: Boolean,
+    innerContentMode: InnerContentMode,
     onClickCard: () -> Unit = {},
     onClickInfo: () -> Unit = {},
     onClickShare: () -> Unit = {},
@@ -40,8 +42,9 @@ fun CardPageView(
 ) {
     CardPageLayout(
         onClickCard = onClickCard,
-        showInnerContent = showInnerContent,
+        innerContentMode = innerContentMode,
         card = {
+            // TODO: 명함 예제 이미지 없애기
             val imageResource = if(cardImagePath == null) ImageBitmap.imageResource(R.drawable.img_card_example)
             else BitmapFactory
                 .decodeFile(cardImagePath)
@@ -84,7 +87,7 @@ fun CreateCardPageView(
 ) {
     CardPageLayout(
         onClickCard = onClick,
-        showInnerContent = false,
+        innerContentMode = InnerContentMode.HIDE,
         card = {
             Column(
                 modifier = Modifier.createCardInner(),
@@ -111,7 +114,7 @@ fun CreateCardPageView(
 @Composable
 private fun CardPageLayout(
     onClickCard: () -> Unit = {},
-    showInnerContent: Boolean,
+    innerContentMode: InnerContentMode,
     card: @Composable () -> Unit,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
@@ -128,8 +131,16 @@ private fun CardPageLayout(
             card()
         }
 
-        if(showInnerContent) {
-            content()
+        when (innerContentMode) {
+            InnerContentMode.SHOW -> content()
+            InnerContentMode.PENDING -> CircularProgressIndicator(
+                modifier = Modifier.progressIndicator()
+            )
+            InnerContentMode.HIDE -> {}
         }
     }
+}
+
+enum class InnerContentMode {
+    SHOW, PENDING, HIDE
 }

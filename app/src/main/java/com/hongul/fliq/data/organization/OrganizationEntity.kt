@@ -1,3 +1,8 @@
 package com.hongul.fliq.data.organization
 
-data class OrganizationEntity()
+import androidx.room.Entity
+
+@Entity(tableName = "organizations")
+data class OrganizationEntity(
+    val id: Int
+)

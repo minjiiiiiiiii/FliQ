@@ -4,8 +4,8 @@ import androidx.room.Entity
 
 @Entity(tableName = "cards")
 data class CardEntity(
-    val id: Long,
-    val owner: Long,
+    val id: Int,
+    val owner: Int,
     val name: String,
     val phone: String,
     val email: String,

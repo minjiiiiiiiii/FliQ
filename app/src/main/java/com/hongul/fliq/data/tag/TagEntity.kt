@@ -1,3 +1,8 @@
 package com.hongul.fliq.data.tag
 
-data class TagEntity()
+import androidx.room.Entity
+
+@Entity(tableName = "tags")
+data class TagEntity(
+    val id: Int
+)

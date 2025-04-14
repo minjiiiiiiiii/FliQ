@@ -1,3 +1,8 @@
 package com.hongul.fliq.data.position
 
-data class PositionEntity()
+import androidx.room.Entity
+
+@Entity(tableName = "positions")
+data class PositionEntity(
+    val id: Int
+)

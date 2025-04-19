@@ -15,7 +15,7 @@ import com.hongul.fliq.ui.navigation.BottomNavigation
 import com.hongul.fliq.ui.navigation.NavigationGraph
 
 @Composable
-fun FliQApp() {
+fun App() {
     val navController = rememberNavController()
     var showNavigation by rememberSaveable { mutableStateOf(true) }
 

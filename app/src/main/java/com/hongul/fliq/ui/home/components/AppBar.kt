@@ -20,22 +20,32 @@ import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.appBar
 @Composable
 fun AppBar(
     title: String,
+    expand: Boolean = true,
     actions: Map<ImageVector, () -> Unit> = mapOf()
 ) {
     val localConfig = LocalConfiguration.current
-    val heightDp = localConfig.screenHeightDp
 
     TopAppBar(
         modifier = Modifier.appBar(),
         title = {
-            Text(text = title, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = when {
+                    expand -> 24.sp
+                    else -> 18.sp
+                }
+            )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = HomeStyles.Colors.rootBackground
         ),
         expandedHeight =
-            if (heightDp <= 840) 80.dp
-            else 120.dp,
+            when {
+                expand == false -> TopAppBarDefaults.TopAppBarExpandedHeight
+                localConfig.screenHeightDp <= 840 -> 80.dp
+                else -> 120.dp
+            },
         actions = {
             for((icon, onClick) in actions) {
                 IconButton(onClick = onClick) {

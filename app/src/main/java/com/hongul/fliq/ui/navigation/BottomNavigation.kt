@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.hongul.fliq.R
-import com.hongul.fliq.ui.navigation.styles.BottomNavigationStyles.Colors
-import com.hongul.fliq.ui.navigation.styles.BottomNavigationStyles.Modifiers.container
-import com.hongul.fliq.ui.navigation.styles.BottomNavigationStyles.Modifiers.item
+import com.hongul.fliq.ui.navigation.styles.NavigationStyles.Colors
+import com.hongul.fliq.ui.navigation.styles.NavigationStyles.Modifiers.container
+import com.hongul.fliq.ui.navigation.styles.NavigationStyles.Modifiers.item
 
 sealed class NavItem(
     val title: String,

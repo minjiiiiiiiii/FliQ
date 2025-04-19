@@ -104,6 +104,9 @@ fun HomeScreen(
                         CreateCardPageView()
                     } else {
                         CardPageView(
+                            onClickShare = {
+                                navigator.navigate("share")
+                            },
                             innerContentMode =
                                 if (showInnerContent) InnerContentMode.SHOW
                                 else InnerContentMode.PENDING

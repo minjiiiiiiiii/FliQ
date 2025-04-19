@@ -16,7 +16,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-object BottomNavigationStyles {
+object NavigationStyles {
     object Modifiers {
         @Composable
         fun Modifier.container() = this
@@ -49,5 +49,9 @@ object BottomNavigationStyles {
         val navTopBorder = Color(0xFFD7D7D7)
         val selected = Color(0xFF4C905D)
         val unselected = Color(0xFFBEBEBE)
+    }
+
+    object Animations {
+        
     }
 }

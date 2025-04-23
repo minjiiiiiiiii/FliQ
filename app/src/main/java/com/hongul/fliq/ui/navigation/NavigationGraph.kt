@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.hongul.fliq.ui.home.CardShareScreen
-import com.hongul.fliq.ui.home.HomeScreen
+import com.hongul.fliq.ui.home.pages.CardShareScreen
+import com.hongul.fliq.ui.home.pages.HomeScreen
 
 @Composable
 fun ColumnScope.NavigationGraph(

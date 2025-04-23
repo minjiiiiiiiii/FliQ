@@ -1,4 +1,4 @@
-package com.hongul.fliq.ui.home
+package com.hongul.fliq.ui.home.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +31,7 @@ import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareGuideImage
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.root
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareContainer
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareContent
+import com.hongul.fliq.ui.home.viewmodels.ShareViewModel
 
 @Composable
 fun CardShareScreen(

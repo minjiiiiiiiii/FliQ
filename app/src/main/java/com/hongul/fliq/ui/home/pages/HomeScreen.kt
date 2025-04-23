@@ -1,4 +1,4 @@
-package com.hongul.fliq.ui.home
+package com.hongul.fliq.ui.home.pages
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +36,7 @@ import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.container
 import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.content
 import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.fabIcon
 import com.hongul.fliq.ui.home.styles.HomeStyles.Modifiers.root
+import com.hongul.fliq.ui.home.viewmodels.HomeViewModel
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)

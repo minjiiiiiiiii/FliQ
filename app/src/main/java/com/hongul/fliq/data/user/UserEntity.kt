@@ -9,5 +9,5 @@ data class UserEntity(
     val id: Int,
     val name: String,
     val email: String,
-    val profile: String
+    val profileImageURL: String
 )

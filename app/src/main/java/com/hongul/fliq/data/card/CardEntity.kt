@@ -9,9 +9,11 @@ data class CardEntity(
     val id: Int,
     val owner: Int,
     val name: String,
-    val phone: String,
     val email: String,
+    val contact: String,
     val profileImageURL: String,
     val cardImageURL: String,
+    val organization: String,
+    val position: String,
     val private: Boolean
 )

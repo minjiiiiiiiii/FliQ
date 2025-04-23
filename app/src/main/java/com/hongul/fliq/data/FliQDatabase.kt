@@ -6,10 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hongul.fliq.data.card.CardDao
 import com.hongul.fliq.data.card.CardEntity
-import com.hongul.fliq.data.organization.OrganizationDao
-import com.hongul.fliq.data.organization.OrganizationEntity
-import com.hongul.fliq.data.position.PositionDao
-import com.hongul.fliq.data.position.PositionEntity
 import com.hongul.fliq.data.tag.TagDao
 import com.hongul.fliq.data.tag.TagEntity
 import com.hongul.fliq.data.user.UserDao
@@ -18,18 +14,14 @@ import com.hongul.fliq.data.user.UserEntity
 @Database(
     entities = [
         CardEntity::class,
-        OrganizationEntity::class,
-        PositionEntity::class,
         TagEntity::class,
         UserEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class FliQDatabase: RoomDatabase() {
     abstract fun cardDao(): CardDao
-    abstract fun organizationDao(): OrganizationDao
-    abstract fun positionDao(): PositionDao
     abstract fun tagDao(): TagDao
     abstract fun userDao(): UserDao
 

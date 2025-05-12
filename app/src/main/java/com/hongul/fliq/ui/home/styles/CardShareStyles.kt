@@ -49,12 +49,13 @@ object CardShareStyles {
         }
 
         @Composable
-        fun Modifier.shareGuideImage(scope: BoxScope) = with(scope) {
-            this@shareGuideImage
+        fun Modifier.shareGuideImage() = this
                 .fillMaxHeight(0.3f)
                 .aspectRatio(1f)
-                .align(Alignment.Center)
-        }
+
+        @Composable
+        fun Modifier.shareGuideText() = this
+            .padding(top = 16.dp)
 
         @Composable
         fun Modifier.cardImageContainer(scope: ColumnScope) = with(scope) {
@@ -72,5 +73,6 @@ object CardShareStyles {
     object Colors {
         val rootBackground = Color(0xFFF3F3F3)
         val surfaceBackground = Color.White
+        val shareGuideText = Color.Gray
     }
 }

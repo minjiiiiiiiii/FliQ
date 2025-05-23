@@ -1,8 +1,5 @@
 package com.hongul.fliq.ui.ddu111
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -20,22 +17,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.animation.core.*
 import com.hongul.fliq.R
-import com.hongul.fliq.ui.theme.BusinessCardTheme
-import androidx.compose.ui.graphics.graphicsLayer
-
-// MainActivity.kt
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            BusinessCardTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    IconScreen() // IconScreen Composable을 호출하여 UI를 설정
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun IconScreen() {

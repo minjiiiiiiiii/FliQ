@@ -1,4 +1,4 @@
-package com.hongul.filq.ui.ddu111
+package com.hongul.fliq.ui.ddu111
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

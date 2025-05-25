@@ -47,7 +47,7 @@ fun AppBar(
                 else -> 120.dp
             },
         actions = {
-            for((icon, onClick) in actions) {
+            for ((icon, onClick) in actions) {
                 IconButton(onClick = onClick) {
                     Icon(icon, "")
                 }

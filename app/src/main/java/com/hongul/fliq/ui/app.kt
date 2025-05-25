@@ -29,7 +29,7 @@ fun App() {
             showNavigation = it
         }
 
-        if(showNavigation){
+        if (showNavigation) {
             BottomNavigation(navController = navController)
         }
     }

@@ -20,10 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hongul.fliq.R
 import com.hongul.filq.ui.contact.ContactCard
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import com.hongul.fliq.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

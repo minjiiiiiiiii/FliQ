@@ -100,7 +100,8 @@ fun AddFriendScreen(
                             .padding(16.dp)
                     ) {
                         Column(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .verticalScroll(rememberScrollState())
                         ) {
                             // Name

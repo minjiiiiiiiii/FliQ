@@ -1,11 +1,24 @@
 package com.hongul.fliq.ui.customize.page
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,7 +35,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrganizationInfoPage(onBack: () -> Unit = {},   onNext: () -> Unit) {
+fun OrganizationInfoPage(onBack: () -> Unit = {}, onNext: () -> Unit) {
     val progress = 0.5f
     val errorMessage = remember { mutableStateOf("") }
     val organization = remember { mutableStateOf("") }
@@ -195,24 +208,24 @@ fun OrganizationInfoPage(onBack: () -> Unit = {},   onNext: () -> Unit) {
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-                Box(
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Button(
+                    onClick = { onNext() },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    contentAlignment = Alignment.BottomCenter
+                        .height(50.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422))
                 ) {
-                    Button(
-                        onClick = {   onNext()},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422))
-                    ) {
-                        Text(text = "다음", color = Color.White, fontSize = 16.sp)
-                    }
+                    Text(text = "다음", color = Color.White, fontSize = 16.sp)
                 }
             }
         }
     }
+}
 

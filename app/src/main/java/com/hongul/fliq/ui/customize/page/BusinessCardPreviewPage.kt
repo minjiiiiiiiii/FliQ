@@ -37,7 +37,8 @@ import com.hongul.fliq.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun BusinessCardPreviewPage(onBack: () -> Unit = {},
+fun BusinessCardPreviewPage(
+    onBack: () -> Unit = {},
 ) {
     val progress = 1f
     val errorMessage = remember { mutableStateOf("") }

@@ -1,6 +1,5 @@
 package com.hongul.fliq.ui.juwon
 
-import com.hongul.fliq.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hongul.fliq.R
 
 val PlayfairFont = FontFamily(
     Font(R.font.playfair_display_black, FontWeight.Normal),

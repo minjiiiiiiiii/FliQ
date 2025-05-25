@@ -86,7 +86,7 @@ fun HomeScreen(
                 modifier = Modifier.content()
             ) {
 
-                val cardList = listOf(1,2,3)
+                val cardList = listOf(1, 2, 3)
                 val pagerState = rememberPagerState { cardList.size + 1 }
 
                 var showInnerContent by remember { mutableStateOf(true) }
@@ -101,7 +101,7 @@ fun HomeScreen(
                     pageSpacing = 16.dp,
                     verticalAlignment = Alignment.Top
                 ) { page ->
-                    if(page == pagerState.pageCount-1) {
+                    if (page == pagerState.pageCount - 1) {
                         CreateCardPageView()
                     } else {
                         CardPageView(

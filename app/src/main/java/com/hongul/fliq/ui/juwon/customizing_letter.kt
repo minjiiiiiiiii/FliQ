@@ -1,55 +1,24 @@
 package com.hongul.fliq.ui.juwon
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hongul.fliq.R
-import com.hongul.fliq.ui.theme.BusinessCardTheme
-import androidx.compose.material3.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.*
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 
 
 @Composable
@@ -175,12 +144,12 @@ fun BusinessCardScreen(modifier: Modifier = Modifier) {
         }
         Spacer(modifier = Modifier.height(100.dp))
         // 네모 박스 설정 Ui
-            Card(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
             shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.cardElevation(8.dp) ,
+            elevation = CardDefaults.cardElevation(8.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -190,9 +159,21 @@ fun BusinessCardScreen(modifier: Modifier = Modifier) {
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    TabButton("글자", painterResource(id = R.drawable.ju_ic_text), selectedTab) { selectedTab = "글자" }
-                    TabButton("배경", painterResource(id = R.drawable.ju_ic_background), selectedTab) { selectedTab = "배경" }
-                    TabButton("아이콘", painterResource(id = R.drawable.ju_ic_icon), selectedTab) { selectedTab = "아이콘" }
+                    TabButton(
+                        "글자",
+                        painterResource(id = R.drawable.ju_ic_text),
+                        selectedTab
+                    ) { selectedTab = "글자" }
+                    TabButton(
+                        "배경",
+                        painterResource(id = R.drawable.ju_ic_background),
+                        selectedTab
+                    ) { selectedTab = "배경" }
+                    TabButton(
+                        "아이콘",
+                        painterResource(id = R.drawable.ju_ic_icon),
+                        selectedTab
+                    ) { selectedTab = "아이콘" }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -259,7 +240,8 @@ fun BusinessCardScreen(modifier: Modifier = Modifier) {
                         )
                         var alphaValue by remember { mutableStateOf(1f) } // 초기 투명도 100%
                         ColorPicker(
-                            colors = listOf( Color.Red, Color.Blue, Color.Green, Color.Gray,
+                            colors = listOf(
+                                Color.Red, Color.Blue, Color.Green, Color.Gray,
                                 Color(0xFFFFC0CB), // Pink
                                 Color(0xFFFFD700)  // Gold
                             ),
@@ -304,6 +286,7 @@ fun BusinessCardScreen(modifier: Modifier = Modifier) {
                             )
                         )
                     }
+
                     "배경" -> BackgroundSettings()
                     "아이콘" -> IconSettings()
                     else -> {}
@@ -367,6 +350,7 @@ fun TabButton(label: String, icon: Painter, selectedTab: String, onClick: () -> 
         }
     }
 }
+
 val pretendard = FontFamily(
     Font(R.font.pretendard_regular, FontWeight.Normal),
     Font(R.font.pretendard_semibold, FontWeight.Bold)
@@ -385,6 +369,7 @@ val fontMap = mapOf(
     "Roboto" to roboto,
     "Noto Sans" to notoSans
 )
+
 // 🔹 폰트 설정 UI
 @Composable
 fun FontSettings(
@@ -407,7 +392,7 @@ fun FontSettings(
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
-        Text("폰트",  style = sectionTitleStyle)
+        Text("폰트", style = sectionTitleStyle)
         DropdownMenuSample(
             items = fontMap.keys.toList(),
             modifier = Modifier
@@ -429,7 +414,7 @@ fun FontSettings(
                 modifier = Modifier
                     .weight(1f) // 동일 폭
             ) {
-                Text("크기",  style = sectionTitleStyle)
+                Text("크기", style = sectionTitleStyle)
                 DropdownMenuSample(
                     items = listOf("12px", "14px", "16px", "18px", "20px"),
                     modifier = Modifier
@@ -444,7 +429,7 @@ fun FontSettings(
                 modifier = Modifier
                     .weight(1f) // 동일 폭
             ) {
-                Text("굵기",  style = sectionTitleStyle)
+                Text("굵기", style = sectionTitleStyle)
                 DropdownMenuSample(
                     items = listOf("Regular", "Bold"),
                     modifier = Modifier
@@ -457,6 +442,7 @@ fun FontSettings(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropdownMenuSample(

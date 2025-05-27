@@ -105,6 +105,9 @@ fun HomeScreen(
                         CreateCardPageView()
                     } else {
                         CardPageView(
+                            onClickInfo = {
+                                navigator.navigate("info/0")
+                            },
                             onClickShare = {
                                 navigator.navigate("share")
                             },

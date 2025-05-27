@@ -2,7 +2,13 @@ package com.hongul.fliq.ui.customize.page
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,7 +21,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,8 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,7 +112,7 @@ fun SelectCardPhoto() {
                 OutlinedTextField(
                     value = name.value,
                     onValueChange = { name.value = it },
-                    placeholder = { Text("홍얼홍얼", color = Color.Black)},
+                    placeholder = { Text("홍얼홍얼", color = Color.Black) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -140,12 +143,15 @@ fun SelectCardPhoto() {
                 OutlinedTextField(
                     value = phone.value,
                     onValueChange = { phone.value = it },
-                    placeholder = {Text("+82) 10.0000.0000", color = Color.Black)},
+                    placeholder = { Text("+82) 10.0000.0000", color = Color.Black) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
-                        .background(Color.Gray.copy(alpha = 0.1f), RoundedCornerShape(8.dp)), // 배경 설정
+                        .background(
+                            Color.Gray.copy(alpha = 0.1f),
+                            RoundedCornerShape(8.dp)
+                        ), // 배경 설정
                     shape = RoundedCornerShape(8.dp),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
@@ -177,7 +183,10 @@ fun SelectCardPhoto() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
-                        .background(Color.Gray.copy(alpha = 0.1f), RoundedCornerShape(8.dp)), // 배경 설정
+                        .background(
+                            Color.Gray.copy(alpha = 0.1f),
+                            RoundedCornerShape(8.dp)
+                        ), // 배경 설정
                     shape = RoundedCornerShape(8.dp),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
@@ -212,7 +221,7 @@ fun SelectCardPhoto() {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 Button(
-                    onClick = {  },
+                    onClick = { },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),

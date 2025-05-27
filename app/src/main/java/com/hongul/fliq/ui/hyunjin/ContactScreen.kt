@@ -5,51 +5,64 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.*
-import androidx.compose.material3.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.material3.*
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
 import com.hongul.fliq.R
 import kotlinx.coroutines.launch
 
@@ -81,19 +94,74 @@ fun ContactScreen(onCategoryConfirmed: (String) -> Unit) {
             var showDeleteDialog by remember { mutableStateOf<Pair<Boolean, Int>>(false to -1) }
             var showContactPopup by remember { mutableStateOf(false) }
 
-            val favoriteContacts = remember { mutableStateOf(listOf<Contact>()) } // 즐겨찾기 카테고리 초기화 (빈 리스트)
-            val personalContacts = remember { mutableStateOf(listOf(
-                Contact(name = "홍길동", phoneNumber = "010-7169-5046", email = "홍길동@example.com", statusMessage = "오늘 하루도 화이팅!"),
-                Contact(name = "김철수", phoneNumber = "010-3250-7942", email = "김철수@example.com", statusMessage = "항상 좋은 하루가 될 거예요, 내일도 힘내세요!"),
-                Contact(name = "이영희", phoneNumber = "010-3041-5868", email = "이영희@example.com", statusMessage = "지금 업무 중입니다, 잠시만 기다려주세요."),
-                Contact(name = "박민수", phoneNumber = "010-4634-8322", email = "박민수@example.com", statusMessage = "연락 주세요, 급한 일이 있습니다."),
-                Contact(name = "정지훈", phoneNumber = "010-3141-9038", email = "정지훈@example.com", statusMessage = "운동하러 가는 중, 1시간 뒤에 통화 가능합니다."),
-                Contact(name = "윤아", phoneNumber = "010-6778-5380", email = "윤아@example.com", statusMessage = "쉬는 시간이에요, 잠시 후 다시 연락드릴게요."),
-                Contact(name = "박지연", phoneNumber = "010-5789-4317", email = "박지연@example.com", statusMessage = "다녀오겠습니다! 기다려주세요."),
-                Contact(name = "김혜진", phoneNumber = "010-3370-2763", email = "김혜진@example.com", statusMessage = "일 끝나고 연락드릴게요, 잠시만 기다려 주세요."),
-                Contact(name = "이준호", phoneNumber = "010-9433-2257", email = "이준호@example.com", statusMessage = "회의 중입니다, 끝나면 바로 연락드릴게요."),
-                Contact(name = "장지연", phoneNumber = "010-3306-5210", email = "장지연@example.com", statusMessage = "여유로운 오후입니다. 잠시 쉬고 있어요.")
-            )) }
+            val favoriteContacts =
+                remember { mutableStateOf(listOf<Contact>()) } // 즐겨찾기 카테고리 초기화 (빈 리스트)
+            val personalContacts = remember {
+                mutableStateOf(
+                    listOf(
+                        Contact(
+                            name = "홍길동",
+                            phoneNumber = "010-7169-5046",
+                            email = "홍길동@example.com",
+                            statusMessage = "오늘 하루도 화이팅!"
+                        ),
+                        Contact(
+                            name = "김철수",
+                            phoneNumber = "010-3250-7942",
+                            email = "김철수@example.com",
+                            statusMessage = "항상 좋은 하루가 될 거예요, 내일도 힘내세요!"
+                        ),
+                        Contact(
+                            name = "이영희",
+                            phoneNumber = "010-3041-5868",
+                            email = "이영희@example.com",
+                            statusMessage = "지금 업무 중입니다, 잠시만 기다려주세요."
+                        ),
+                        Contact(
+                            name = "박민수",
+                            phoneNumber = "010-4634-8322",
+                            email = "박민수@example.com",
+                            statusMessage = "연락 주세요, 급한 일이 있습니다."
+                        ),
+                        Contact(
+                            name = "정지훈",
+                            phoneNumber = "010-3141-9038",
+                            email = "정지훈@example.com",
+                            statusMessage = "운동하러 가는 중, 1시간 뒤에 통화 가능합니다."
+                        ),
+                        Contact(
+                            name = "윤아",
+                            phoneNumber = "010-6778-5380",
+                            email = "윤아@example.com",
+                            statusMessage = "쉬는 시간이에요, 잠시 후 다시 연락드릴게요."
+                        ),
+                        Contact(
+                            name = "박지연",
+                            phoneNumber = "010-5789-4317",
+                            email = "박지연@example.com",
+                            statusMessage = "다녀오겠습니다! 기다려주세요."
+                        ),
+                        Contact(
+                            name = "김혜진",
+                            phoneNumber = "010-3370-2763",
+                            email = "김혜진@example.com",
+                            statusMessage = "일 끝나고 연락드릴게요, 잠시만 기다려 주세요."
+                        ),
+                        Contact(
+                            name = "이준호",
+                            phoneNumber = "010-9433-2257",
+                            email = "이준호@example.com",
+                            statusMessage = "회의 중입니다, 끝나면 바로 연락드릴게요."
+                        ),
+                        Contact(
+                            name = "장지연",
+                            phoneNumber = "010-3306-5210",
+                            email = "장지연@example.com",
+                            statusMessage = "여유로운 오후입니다. 잠시 쉬고 있어요."
+                        )
+                    )
+                )
+            }
             var filteredContacts by remember { mutableStateOf(personalContacts.value) }
 
             // 정렬 기준 변수 추가
@@ -183,7 +251,8 @@ fun ContactScreen(onCategoryConfirmed: (String) -> Unit) {
                             categoryName = categories[showDeleteDialog.second],
                             onCancel = { showDeleteDialog = false to -1 },
                             onDelete = {
-                                categories = categories.toMutableList().apply { removeAt(showDeleteDialog.second) }
+                                categories = categories.toMutableList()
+                                    .apply { removeAt(showDeleteDialog.second) }
                                 showDeleteDialog = false to -1
                             }
                         )
@@ -313,7 +382,8 @@ fun ContactScreen(onCategoryConfirmed: (String) -> Unit) {
                                     filteredContacts = filteredContacts // 기존 배열 순서 그대로 유지
                                 } else {
                                     sortOrder = "이름순"
-                                    filteredContacts = filteredContacts.sortedBy { it.name } // 이름순으로 정렬
+                                    filteredContacts =
+                                        filteredContacts.sortedBy { it.name } // 이름순으로 정렬
                                 }
                             }
                         ) {
@@ -360,7 +430,11 @@ fun ContactScreen(onCategoryConfirmed: (String) -> Unit) {
                             // 명함 추가하기 버튼 클릭 시 팝업을 표시
                             Button(
                                 onClick = { showContactPopup = true },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(
+                                        0xFF125422
+                                    )
+                                ),
                                 shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -391,7 +465,11 @@ fun ContactScreen(onCategoryConfirmed: (String) -> Unit) {
                                         .fillMaxWidth()
                                         .padding(vertical = 8.dp),
                                     shape = RoundedCornerShape(30.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFD8F3DC))
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color(
+                                            0xFFD8F3DC
+                                        )
+                                    )
                                 ) {
                                     Row(
                                         modifier = Modifier
@@ -446,9 +524,17 @@ fun ContactScreen(onCategoryConfirmed: (String) -> Unit) {
                                                 modifier = Modifier.fillMaxWidth(0.9f)
                                             )
                                             Spacer(modifier = Modifier.height(4.dp))
-                                            Text(contact.phoneNumber, fontSize = 12.sp, color = Color(0xFF125422))
+                                            Text(
+                                                contact.phoneNumber,
+                                                fontSize = 12.sp,
+                                                color = Color(0xFF125422)
+                                            )
                                             Spacer(modifier = Modifier.height(4.dp))
-                                            Text(contact.email, fontSize = 12.sp, color = Color(0xFF125422))
+                                            Text(
+                                                contact.email,
+                                                fontSize = 12.sp,
+                                                color = Color(0xFF125422)
+                                            )
                                         }
 
                                         // 즐겨찾기 버튼을 Row의 제일 오른쪽에 배치
@@ -460,13 +546,16 @@ fun ContactScreen(onCategoryConfirmed: (String) -> Unit) {
                                             modifier = Modifier
                                                 .size(32.dp)
                                                 .clickable {
-                                                    contact.isFavorite = !contact.isFavorite // 클릭 시 즐겨찾기 상태 변경
+                                                    contact.isFavorite =
+                                                        !contact.isFavorite // 클릭 시 즐겨찾기 상태 변경
 
                                                     // 즐겨찾기 해제 시 즐겨찾기 카테고리에서도 제거
                                                     if (!contact.isFavorite) {
-                                                        favoriteContacts.value = favoriteContacts.value.filter { it != contact }
+                                                        favoriteContacts.value =
+                                                            favoriteContacts.value.filter { it != contact }
                                                     } else {
-                                                        favoriteContacts.value = favoriteContacts.value + contact
+                                                        favoriteContacts.value =
+                                                            favoriteContacts.value + contact
                                                     }
                                                 },
                                             tint = Color(0xFF125422)
@@ -484,7 +573,6 @@ fun ContactScreen(onCategoryConfirmed: (String) -> Unit) {
 }
 
 
-
 data class Contact(
     val name: String,
     val phoneNumber: String,
@@ -492,7 +580,6 @@ data class Contact(
     var statusMessage: String = "",  // 상태 메시지 추가
     var isFavorite: Boolean = false // 즐겨찾기 여부
 )
-
 
 
 @Composable
@@ -657,7 +744,11 @@ fun ContactBottomSheet(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ContactSavedPopup(modifier: Modifier = Modifier, onDismiss: () -> Unit, onViewCard: () -> Unit) {
+fun ContactSavedPopup(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+    onViewCard: () -> Unit
+) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Card(
             modifier = Modifier
@@ -685,7 +776,9 @@ fun ContactSavedPopup(modifier: Modifier = Modifier, onDismiss: () -> Unit, onVi
                 // 버튼들을 가로로 배치
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 ) {
                     Button(
                         onClick = { onDismiss() },
@@ -693,7 +786,12 @@ fun ContactSavedPopup(modifier: Modifier = Modifier, onDismiss: () -> Unit, onVi
                         colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("확인", color = Color.Black, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            "확인",
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
 
                     Button(
@@ -704,7 +802,12 @@ fun ContactSavedPopup(modifier: Modifier = Modifier, onDismiss: () -> Unit, onVi
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF125422)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("명함 보기", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            "명함 보기",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -712,21 +815,24 @@ fun ContactSavedPopup(modifier: Modifier = Modifier, onDismiss: () -> Unit, onVi
     }
 }
 
-
 @Composable
 fun CircleIconButton(icon: ImageVector, size: Dp, onClick: () -> Unit) {
     Surface(
         shape = CircleShape,
-        modifier = Modifier.size(size).clickable(onClick = onClick)
+        modifier = Modifier
+            .size(size)
+            .clickable(onClick = onClick)
     ) {
         Icon(
             icon, contentDescription = null,
-            modifier = Modifier.fillMaxSize().background(Color(0xFF7FBE85)).padding(10.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF7FBE85))
+                .padding(10.dp),
             tint = Color.White
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

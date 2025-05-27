@@ -2,5 +2,5 @@ package com.hongul.fliq.ui.home.viewmodels
 
 import androidx.lifecycle.ViewModel
 
-class ShareViewModel: ViewModel() {
+class ShareViewModel : ViewModel() {
 }

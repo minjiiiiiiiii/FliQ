@@ -42,12 +42,12 @@ fun AppBar(
         ),
         expandedHeight =
             when {
-                expand == false -> TopAppBarDefaults.TopAppBarExpandedHeight
+                !expand -> TopAppBarDefaults.TopAppBarExpandedHeight
                 localConfig.screenHeightDp <= 840 -> 80.dp
                 else -> 120.dp
             },
         actions = {
-            for((icon, onClick) in actions) {
+            for ((icon, onClick) in actions) {
                 IconButton(onClick = onClick) {
                     Icon(icon, "")
                 }

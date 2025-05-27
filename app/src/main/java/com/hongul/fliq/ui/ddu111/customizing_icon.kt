@@ -1,21 +1,43 @@
 package com.hongul.fliq.ui.ddu111
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateOffsetAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.animation.core.*
 import com.hongul.fliq.R
 
 @Composable
@@ -57,10 +79,26 @@ fun IconScreen() {
                     verticalArrangement = Arrangement.Center, // 수직 중앙 정렬
                 ) {
                     // 명함의 내용 텍스트
-                    Text(text = "홍얼홍얼", fontSize = 16.sp, modifier = Modifier.align(Alignment.Start))
-                    Text(text = "+82)10.0000.0000", fontSize = 16.sp, modifier = Modifier.align(Alignment.Start))
-                    Text(text = "xxx@stu.kmu.ac.kr", fontSize = 16.sp, modifier = Modifier.align(Alignment.Start))
-                    Text(text = "Wishlist _ can't be blue", fontSize = 16.sp, modifier = Modifier.align(Alignment.Start))
+                    Text(
+                        text = "홍얼홍얼",
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                    Text(
+                        text = "+82)10.0000.0000",
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                    Text(
+                        text = "xxx@stu.kmu.ac.kr",
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                    Text(
+                        text = "Wishlist _ can't be blue",
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.Start)
+                    )
                 }
 
                 // 선택된 아이콘을 명함에 표시하는 부분
@@ -79,7 +117,10 @@ fun IconScreen() {
                     Text(
                         text = selectedIcon,  // 명함에 표시될 아이콘
                         fontSize = 48.sp,
-                        modifier = Modifier.offset(x = animatedPosition.x.dp, y = animatedPosition.y.dp) // 애니메이션된 위치로 이동
+                        modifier = Modifier.offset(
+                            x = animatedPosition.x.dp,
+                            y = animatedPosition.y.dp
+                        ) // 애니메이션된 위치로 이동
                     )
                 }
 
@@ -117,9 +158,21 @@ fun IconScreen() {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     // 탭 버튼들
-                    TabButton("글자", painterResource(id = R.drawable.su_ic_text), selectedTab) { selectedTab = "글자" }
-                    TabButton("배경", painterResource(id = R.drawable.su_ic_background), selectedTab) { selectedTab = "배경" }
-                    TabButton("아이콘", painterResource(id = R.drawable.su_ic_icon), selectedTab) { selectedTab = "아이콘" }
+                    TabButton(
+                        "글자",
+                        painterResource(id = R.drawable.su_ic_text),
+                        selectedTab
+                    ) { selectedTab = "글자" }
+                    TabButton(
+                        "배경",
+                        painterResource(id = R.drawable.su_ic_background),
+                        selectedTab
+                    ) { selectedTab = "배경" }
+                    TabButton(
+                        "아이콘",
+                        painterResource(id = R.drawable.su_ic_icon),
+                        selectedTab
+                    ) { selectedTab = "아이콘" }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

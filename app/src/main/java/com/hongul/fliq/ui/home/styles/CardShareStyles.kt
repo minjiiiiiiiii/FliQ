@@ -1,7 +1,5 @@
 package com.hongul.fliq.ui.home.styles
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -10,11 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 
 object CardShareStyles {
     object Modifiers {
@@ -50,8 +46,8 @@ object CardShareStyles {
 
         @Composable
         fun Modifier.shareGuideImage() = this
-                .fillMaxHeight(0.3f)
-                .aspectRatio(1f)
+            .fillMaxHeight(0.3f)
+            .aspectRatio(1f)
 
         @Composable
         fun Modifier.shareGuideText() = this

@@ -45,10 +45,11 @@ fun CardPageView(
         innerContentMode = innerContentMode,
         card = {
             // TODO: 명함 예제 이미지 없애기
-            val imageResource = if(cardImagePath == null) ImageBitmap.imageResource(R.drawable.img_card_example)
-            else BitmapFactory
-                .decodeFile(cardImagePath)
-                .asImageBitmap()
+            val imageResource =
+                if (cardImagePath == null) ImageBitmap.imageResource(R.drawable.img_card_example)
+                else BitmapFactory
+                    .decodeFile(cardImagePath)
+                    .asImageBitmap()
 
             Image(
                 bitmap = imageResource,
@@ -136,6 +137,7 @@ private fun CardPageLayout(
             InnerContentMode.PENDING -> CircularProgressIndicator(
                 modifier = Modifier.progressIndicator()
             )
+
             InnerContentMode.HIDE -> {}
         }
     }

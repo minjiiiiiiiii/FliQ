@@ -27,10 +27,10 @@ sealed class NavItem(
     val route: String,
     @DrawableRes val icon: Int,
 ) {
-    object Home: NavItem("내 명함", "home", R.drawable.ic_nav_home)
-    object Contact: NavItem("연락처", "contact", R.drawable.ic_nav_contact)
-    object Search: NavItem("검색", "search", R.drawable.ic_nav_search)
-    object More: NavItem("더보기", "more", R.drawable.ic_nav_more)
+    object Home : NavItem("내 명함", "home", R.drawable.ic_nav_home)
+    object Contact : NavItem("연락처", "contact", R.drawable.ic_nav_contact)
+    object Search : NavItem("검색", "search", R.drawable.ic_nav_search)
+    object More : NavItem("더보기", "more", R.drawable.ic_nav_more)
 }
 
 @Composable
@@ -49,7 +49,7 @@ fun BottomNavigation(navController: NavHostController) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        for(item in items) {
+        for (item in items) {
             BottomNavigationItem(
                 icon = item.icon,
                 title = item.title,

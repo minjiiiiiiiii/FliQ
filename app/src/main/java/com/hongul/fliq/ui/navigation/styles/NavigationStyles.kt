@@ -52,6 +52,6 @@ object NavigationStyles {
     }
 
     object Animations {
-        
+
     }
 }

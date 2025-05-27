@@ -1,7 +1,4 @@
 package com.hongul.fliq.ui.customize.page
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.compose.LocalLifecycleOwner
 
 import android.util.Log
 import android.view.ViewGroup
@@ -9,20 +6,16 @@ import android.widget.FrameLayout
 import androidx.camera.core.CameraSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,11 +23,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import com.hongul.fliq.R
+import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BusinessCardScanPage( onBack: () -> Unit = {},   onNext: () -> Unit) {
+fun BusinessCardScanPage(onBack: () -> Unit = {}, onNext: () -> Unit) {
     val progress = 0.6f
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -98,7 +91,7 @@ fun BusinessCardScanPage( onBack: () -> Unit = {},   onNext: () -> Unit) {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 Button(
-                    onClick = {   onNext()},
+                    onClick = { onNext() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),

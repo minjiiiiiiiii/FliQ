@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hongul.fliq.R
@@ -100,12 +101,13 @@ fun AddFriendScreen(
                             .padding(16.dp)
                     ) {
                         Column(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .verticalScroll(rememberScrollState())
                         ) {
                             // Name
                             Text(
-                                text = "$name",
+                                text = name,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 24.sp,
                                 color = contentColor,
@@ -225,5 +227,14 @@ fun AddFriendScreen(
                 }
             }
         }
+    )
+}
+
+@Preview
+@Composable
+fun AddFriendScreenPreview() {
+    AddFriendScreen(
+        name = "홍얼홍얼",
+        tags = "개발자, 디자이너, 홍얼홍얼"
     )
 }

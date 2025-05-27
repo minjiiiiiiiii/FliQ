@@ -1,6 +1,8 @@
 package com.hongul.fliq.ui.customize
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -21,8 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-//import androidx.navigation.NavHostController
-
 import com.hongul.fliq.ui.customize.page.BasicInformationPage
 import com.hongul.fliq.ui.customize.page.BusinessCardCreationPage
 import com.hongul.fliq.ui.customize.page.BusinessCardPhotoGuidePage
@@ -33,7 +33,7 @@ import com.hongul.fliq.ui.customize.page.OrganizationInfoPage
 import com.hongul.fliq.ui.customize.page.ScannedInfoCheckPage
 import com.hongul.fliq.ui.customize.page.SelectBusinessCardStylePage
 import kotlinx.coroutines.launch
-//navigator: NavHostController, viewModel: CustomizeViewModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusinessCardGenerateScreen() {
@@ -48,7 +48,6 @@ fun BusinessCardGenerateScreen() {
 
 
     LaunchedEffect(ps.currentPage, currentSNS) {
-        //Log.d("Basic", info.toString())
         title = when {
             else -> when (ps.currentPage) {
                 0 -> "명함 생성"
@@ -137,34 +136,42 @@ fun BusinessCardGenerateScreen() {
                                 }
                             }
                         )
+
                         1 -> BusinessCardPhotoGuidePage(
                             onBack = { scope.launch { ps.scrollToPage(0) } },
                             onNext = { scope.launch { ps.scrollToPage(2) } },
                         )
+
                         2 -> BusinessCardScanPage(
                             onBack = { scope.launch { ps.scrollToPage(1) } },
                             onNext = { scope.launch { ps.scrollToPage(3) } },
                         )
+
                         3 -> ScannedInfoCheckPage(
                             onNext = { scope.launch { ps.scrollToPage(4) } },
                             onBack = { scope.launch { ps.scrollToPage(2) } },
                         )
+
                         4 -> BusinessCardPreviewPage(
                             //onNext = { scope.launch { ps.scrollToPage(5) } },
                             onBack = { scope.launch { ps.scrollToPage(3) } },
                         )
+
                         5 -> BasicInformationPage(
                             onNext = { scope.launch { ps.scrollToPage(6) } },
                             onBack = { scope.launch { ps.scrollToPage(0) } },
                         )
+
                         6 -> OrganizationInfoPage(
                             onNext = { scope.launch { ps.scrollToPage(7) } },
                             onBack = { scope.launch { ps.scrollToPage(5) } },
                         )
+
                         7 -> BusinessCardCreationPage(
                             onNext = { scope.launch { ps.scrollToPage(8) } },
                             onBack = { scope.launch { ps.scrollToPage(6) } },
                         )
+
                         8 -> BusinessCardPreviewPage(
                             onBack = { scope.launch { ps.scrollToPage(7) } },
                         )

@@ -35,11 +35,11 @@ import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.cardImage
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.cardImageContainer
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.container
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.content
-import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareGuideImageContainer
-import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareGuideImage
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.root
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareContainer
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareContent
+import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareGuideImage
+import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareGuideImageContainer
 import com.hongul.fliq.ui.home.styles.CardShareStyles.Modifiers.shareGuideText
 import com.hongul.fliq.ui.home.viewmodels.ShareViewModel
 
@@ -109,7 +109,9 @@ fun CardShareScreen(
                         }
 
                         Row(
-                            modifier = Modifier.padding(end = 8.dp).fillMaxWidth(),
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
                         ) {

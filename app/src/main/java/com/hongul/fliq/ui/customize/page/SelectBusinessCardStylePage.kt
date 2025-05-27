@@ -1,14 +1,36 @@
 package com.hongul.fliq.ui.customize.page
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,18 +44,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hongul.fliq.R
-import androidx.compose.foundation.border
-import androidx.compose.foundation.BorderStroke
 
 enum class CardInputOption {
     Photo, Auto
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectBusinessCardStylePage( onBack: () -> Unit = {},
-                                 onPhotoSelected: () -> Unit,
-                                 onAutoGenerateSelected: () -> Unit,
-                                 onNavigateToNext: (Int) -> Unit) {
+fun SelectBusinessCardStylePage(
+    onBack: () -> Unit = {},
+    onPhotoSelected: () -> Unit,
+    onAutoGenerateSelected: () -> Unit,
+    onNavigateToNext: (Int) -> Unit
+) {
     val selectedOption = remember { mutableStateOf<CardInputOption?>(null) }
 
     val progress = 0.2f
@@ -60,7 +83,7 @@ fun SelectBusinessCardStylePage( onBack: () -> Unit = {},
                 )
             }
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
 
             Text(
@@ -70,157 +93,163 @@ fun SelectBusinessCardStylePage( onBack: () -> Unit = {},
                 modifier = Modifier.padding(vertical = 20.dp)
             )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .width(380.dp)
+                        .height(230.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .clickable {
+                            selectedOption.value = CardInputOption.Photo
+                        }
+                        .then(
+                            if (selectedOption.value == CardInputOption.Photo)
+                                Modifier.border(
+                                    BorderStroke(2.dp, Color(0xFF125422)),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                            else Modifier
+                        ),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
+                    elevation = CardDefaults.cardElevation(4.dp)
                 ) {
-                    Card(
+                    Column(
                         modifier = Modifier
-                            .width(380.dp)
-                            .height(230.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .clickable {
-                                selectedOption.value = CardInputOption.Photo
-                            }
-                            .then(
-                                if (selectedOption.value == CardInputOption.Photo)
-                                    Modifier.border(BorderStroke(2.dp, Color(0xFF125422)), shape = RoundedCornerShape(12.dp))
-                                else Modifier
-                            ),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
-                        elevation = CardDefaults.cardElevation(4.dp)
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
+                        Box(
                             modifier = Modifier
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .size(140.dp)
+                                .clip(RoundedCornerShape(8.dp))
                         ) {
-                            Box(
+                            Image(
+                                painter = painterResource(id = R.drawable.ju_photo_image),
+                                contentDescription = "사진으로 불러오기",
                                 modifier = Modifier
-                                    .size(140.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ju_photo_image),
-                                    contentDescription = "사진으로 불러오기",
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .fillMaxSize(0.75f),
-                                    contentScale = ContentScale.Fit
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            Text(
-                                text = "사진으로 불러오기",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Gray
+                                    .align(Alignment.Center)
+                                    .fillMaxSize(0.75f),
+                                contentScale = ContentScale.Fit
                             )
-
-                            Spacer(modifier = Modifier.height(20.dp))
                         }
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(start = 12.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = "Info Icon",
-                            tint = Color.Gray,
-                            modifier = Modifier.size(16.dp)
-                        )
 
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = "선택 시, 명함을 사진첩에서 불러올 수 있습니다.",
-                            fontSize = 12.sp,
+                            text = "사진으로 불러오기",
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Gray,
+                            color = Color.Gray
                         )
+
+                        Spacer(modifier = Modifier.height(20.dp))
                     }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(start = 12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "Info Icon",
+                        tint = Color.Gray,
+                        modifier = Modifier.size(16.dp)
+                    )
+
                     Spacer(modifier = Modifier.width(6.dp))
-                    Card(
-                        modifier = Modifier
-                            .width(380.dp)
-                            .height(230.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .clickable {
-                                selectedOption.value = CardInputOption.Auto
-                            }
-                            .then(
-                                if (selectedOption.value == CardInputOption.Auto)
-                                    Modifier.border(BorderStroke(2.dp, Color(0xFF125422)), shape = RoundedCornerShape(12.dp))
-                                else Modifier
-                            ),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
-                        elevation = CardDefaults.cardElevation(4.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 16.dp, bottom = 2.dp),
-                            verticalArrangement = Arrangement.Top,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .height(160.dp)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                // 이미지
-                                Image(
-                                    painter = painterResource(id = R.drawable.ju_ai_image),
-                                    contentDescription = "자동 생성하기",
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .aspectRatio(1f),
-                                    contentScale = ContentScale.Fit
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(0.dp))
 
-                            Text(
-                                text = "자동 생성하기",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Gray
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "선택 시, 명함을 사진첩에서 불러올 수 있습니다.",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray,
+                    )
+                }
+                Spacer(modifier = Modifier.width(6.dp))
+                Card(
+                    modifier = Modifier
+                        .width(380.dp)
+                        .height(230.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .clickable {
+                            selectedOption.value = CardInputOption.Auto
                         }
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(start = 12.dp)
+                        .then(
+                            if (selectedOption.value == CardInputOption.Auto)
+                                Modifier.border(
+                                    BorderStroke(2.dp, Color(0xFF125422)),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                            else Modifier
+                        ),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 16.dp, bottom = 2.dp),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = "Info Icon",
-                            tint = Color.Gray,
-                            modifier = Modifier.size(16.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Box(
+                            modifier = Modifier
+                                .height(160.dp)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            // 이미지
+                            Image(
+                                painter = painterResource(id = R.drawable.ju_ai_image),
+                                contentDescription = "자동 생성하기",
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .aspectRatio(1f),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(0.dp))
 
                         Text(
-                            text = "선택 시, AI가 자동으로 명함을 생성해 드립니다.",
-                            fontSize = 12.sp,
+                            text = "자동 생성하기",
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Gray,
+                            color = Color.Gray
                         )
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(start = 12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "Info Icon",
+                        tint = Color.Gray,
+                        modifier = Modifier.size(16.dp)
+                    )
+
                     Spacer(modifier = Modifier.width(6.dp))
-                    }
+
+                    Text(
+                        text = "선택 시, AI가 자동으로 명함을 생성해 드립니다.",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray,
+                    )
+                }
+                Spacer(modifier = Modifier.width(6.dp))
+            }
             Spacer(modifier = Modifier.weight(1f))
             Box(
                 modifier = Modifier
@@ -235,10 +264,12 @@ fun SelectBusinessCardStylePage( onBack: () -> Unit = {},
                                 onPhotoSelected()
                                 onNavigateToNext(5)
                             }
+
                             CardInputOption.Auto -> {
                                 onAutoGenerateSelected()
                                 onNavigateToNext(11)
                             }
+
                             null -> {
                             }
                         }
